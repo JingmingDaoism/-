@@ -1,16 +1,14 @@
-// 道教净明宗 PWA Service Worker
-const CACHE_NAME = 'jingming-calendar-v1';
+// 淨明宗 PWA Service Worker
+const CACHE_NAME = 'jingming-v3';
 const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
-  './js/app.js',
-  './js/data.js',
+  './data.js',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
 
-// 安装
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
@@ -20,7 +18,6 @@ self.addEventListener('install', function(event) {
   self.skipWaiting();
 });
 
-// 激活
 self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(cacheNames) {
@@ -36,17 +33,13 @@ self.addEventListener('activate', function(event) {
   self.clients.claim();
 });
 
-//  fetch - 缓存优先策略
 self.addEventListener('fetch', function(event) {
+  if (event.request.method !== 'GET') return;
   event.respondWith(
     caches.match(event.request).then(function(response) {
-      if (response) {
-        return response;
-      }
+      if (response) return response;
       return fetch(event.request).then(function(response) {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
-        }
+        if (!response || response.status !== 200 || response.type !== 'basic') return response;
         var responseToCache = response.clone();
         caches.open(CACHE_NAME).then(function(cache) {
           cache.put(event.request, responseToCache);

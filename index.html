@@ -3,427 +3,1712 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#6B2D8E">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="净明宗日历">
-<title>道教净明宗 日历一览</title>
+<title>净明宗 · Jingming</title>
 <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#EAE2D4">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="淨明宗">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&family=Long+Cang&family=Noto+Serif+SC:wght@200;300;400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  background: #FAF8FC;
-  color: #2D1B3D;
-  min-height: 100vh;
-  overflow-x: hidden;
+/* ============ RESET & TOKENS ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#EAE2D4;
+  --card:#F5EFE4;
+  --card-raised:#F8F3E9;
+  --ink:#241E15;
+  --ink-soft:#4A4034;
+  --muted:#9C8F7A;
+  --muted-light:#B8AC99;
+  --red:#A63A2E;
+  --red-soft:#C4564A;
+  --gold:#A8884E;
+  --line:#DDD3C0;
+  --line-soft:#E6DECE;
+  --shadow:8px 8px 24px rgba(120,95,55,0.10), -8px -8px 24px rgba(255,252,245,0.7);
+  --shadow-sm:4px 4px 12px rgba(120,95,55,0.08), -4px -4px 12px rgba(255,252,245,0.6);
+  --shadow-inset:inset 3px 3px 8px rgba(120,95,55,0.08), inset -3px -3px 8px rgba(255,252,245,0.7);
+  --serif:'Noto Serif SC',serif;
+  --brush:'Zhi Mang Xing','Ma Shan Zheng',cursive;
+  --cao:'Long Cang','Zhi Mang Xing',cursive;
+  --en-serif:'Cormorant Garamond',serif;
+  --en-sans:'Jost',sans-serif;
 }
-.header {
-  background: linear-gradient(135deg, #6B2D8E 0%, #8B3FB0 50%, #A855C8 100%);
-  color: white;
-  padding: 20px 16px 16px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 12px rgba(107,45,142,0.3);
+html,body{height:100%;}
+body{
+  font-family:var(--serif);
+  background:var(--bg);
+  color:var(--ink);
+  font-weight:300;
+  line-height:1.7;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
 }
-.header h1 {
-  font-size: 18px;
-  font-weight: 600;
-  text-align: center;
-  letter-spacing: 2px;
+/* phone frame on desktop */
+.phone-wrap{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,#E8E0D1,#F0EADF);
 }
-.header .subtitle {
-  font-size: 11px;
-  text-align: center;
-  opacity: 0.85;
-  margin-top: 4px;
-  letter-spacing: 1px;
+.phone{
+  width:100%;height:100%;max-width:430px;max-height:932px;
+  background:var(--bg);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
 }
-.content {
-  padding: 16px;
-  padding-bottom: 80px;
-  max-width: 800px;
-  margin: 0 auto;
+@media(min-width:480px){
+  .phone{border-radius:42px;box-shadow:20px 20px 60px rgba(100,78,40,0.18),-15px -15px 50px rgba(255,252,245,0.8);height:92vh;}
 }
-.page { display: none; animation: fadeIn 0.3s ease; }
-.page.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.card {
-  background: white;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 14px;
-  box-shadow: 0 2px 8px rgba(107,45,142,0.08);
-  border: 1px solid rgba(107,45,142,0.06);
+
+/* ============ APP HEADER ============ */
+.app-header{
+  padding:20px 28px 8px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
 }
-.card h2 {
-  font-size: 16px;
-  color: #6B2D8E;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #F0E6F5;
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-seal{
+  width:30px;height:30px;background:var(--red);
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  color:#F5EFE4;font-family:var(--serif);font-weight:700;font-size:16px;
+  letter-spacing:0;
+  box-shadow:0 2px 6px rgba(166,58,46,0.35);
 }
-.card p { font-size: 14px; line-height: 1.7; color: #4A3A5C; margin-bottom: 8px; }
-.card ul { padding-left: 20px; margin-bottom: 8px; }
-.card li { font-size: 14px; line-height: 1.7; color: #4A3A5C; margin-bottom: 4px; }
-.nav-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  display: flex;
-  justify-content: space-around;
-  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
-  box-shadow: 0 -2px 12px rgba(107,45,142,0.1);
-  z-index: 100;
+.brand-name{font-family:var(--serif);font-weight:600;font-size:18px;letter-spacing:4px;color:var(--ink);}
+.brand-en{font-family:var(--en-sans);font-size:9px;font-weight:300;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:1px;}
+.header-right{font-family:var(--en-sans);font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+
+/* ============ PAGES ============ */
+.pages{flex:1;overflow:hidden;position:relative;}
+.page{
+  position:absolute;inset:0;
+  overflow-y:auto;overflow-x:hidden;
+  padding:0 24px 110px;
+  opacity:0;pointer-events:none;
+  transform:translateY(12px);
+  transition:opacity .45s ease,transform .45s ease;
+  scrollbar-width:none;
 }
-.nav-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 6px 4px;
-  cursor: pointer;
-  transition: all 0.2s;
+.page::-webkit-scrollbar{display:none;}
+.page.active{opacity:1;pointer-events:auto;transform:translateY(0);}
+
+/* ============ HOME: HERO CARD ============ */
+.hero{
+  margin-top:14px;
+  background:var(--card-raised);
+  border-radius:28px;
+  box-shadow:var(--shadow);
+  padding:30px 26px 26px;
+  position:relative;overflow:hidden;
 }
-.nav-item .icon { font-size: 22px; margin-bottom: 2px; }
-.nav-item .label { font-size: 10px; color: #999; }
-.nav-item.active .label { color: #6B2D8E; font-weight: 600; }
-.nav-item.active { transform: translateY(-2px); }
-.search-box {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid #E0D0EA;
-  border-radius: 10px;
-  font-size: 14px;
-  margin-bottom: 12px;
-  background: #FDFBFE;
-  outline: none;
+.hero-en{
+  font-family:var(--en-sans);font-size:7.5px;font-weight:300;
+  letter-spacing:3.5px;color:var(--muted);text-transform:uppercase;
+  text-align:center;margin-bottom:4px;
 }
-.search-box:focus { border-color: #8B3FB0; box-shadow: 0 0 0 3px rgba(139,63,176,0.1); }
-.filter-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-.filter-tag {
-  padding: 6px 14px;
-  background: #F5EEF9;
-  border: 1px solid #E0D0EA;
-  border-radius: 20px;
-  font-size: 12px;
-  color: #6B2D8E;
-  cursor: pointer;
-  transition: all 0.2s;
+.hero-date-en{
+  font-family:var(--en-serif);font-style:italic;font-size:13px;
+  color:var(--muted);text-align:center;letter-spacing:1px;
 }
-.filter-tag.active { background: #6B2D8E; color: white; border-color: #6B2D8E; }
-.deity-card {
-  background: white;
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 10px;
-  display: flex;
-  gap: 12px;
-  box-shadow: 0 2px 6px rgba(107,45,142,0.06);
-  border: 1px solid rgba(107,45,142,0.05);
-  cursor: pointer;
-  transition: all 0.2s;
+.hero-center{
+  display:flex;align-items:center;justify-content:center;
+  gap:18px;margin:18px 0 10px;position:relative;
 }
-.deity-card:active { transform: scale(0.98); }
-.deity-card img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; background: #F5EEF9; }
-.deity-info { flex: 1; min-width: 0; }
-.deity-info h3 { font-size: 15px; color: #6B2D8E; margin-bottom: 4px; }
-.deity-info p { font-size: 12px; color: #888; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
-.calendar-day {
-  aspect-ratio: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  font-size: 13px;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s;
+.vert-text{
+  writing-mode:vertical-rl;
+  font-family:var(--serif);font-weight:400;
+  font-size:13px;letter-spacing:9px;color:var(--ink-soft);
+  line-height:1.4;
 }
-.calendar-day.has-event { background: #F5EEF9; color: #6B2D8E; font-weight: 600; }
-.calendar-day.today { background: #6B2D8E; color: white; }
-.calendar-day.other-month { opacity: 0.3; }
-.calendar-day .dot { position: absolute; bottom: 4px; width: 4px; height: 4px; border-radius: 50%; background: #8B3FB0; }
-.calendar-day.today .dot { background: white; }
-.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.calendar-header button { background: #6B2D8E; color: white; border: none; padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; }
-.calendar-header h3 { font-size: 16px; color: #6B2D8E; }
-.weekday-row { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; color: #999; margin-bottom: 6px; }
-.event-detail {
-  background: white;
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 6px rgba(107,45,142,0.06);
-  border-left: 4px solid #6B2D8E;
+.vert-text.left{letter-spacing:10px;}
+.hero-big{
+  position:relative;
+  width:215px;height:215px;
+  display:flex;align-items:center;justify-content:center;
 }
-.event-detail h3 { font-size: 15px; color: #6B2D8E; margin-bottom: 6px; }
-.event-detail .date { font-size: 12px; color: #999; margin-bottom: 8px; }
-.event-detail .desc { font-size: 13px; line-height: 1.7; color: #4A3A5C; white-space: pre-wrap; }
-.term-item {
-  background: white;
-  border-radius: 10px;
-  padding: 12px 14px;
-  margin-bottom: 8px;
-  box-shadow: 0 1px 4px rgba(107,45,142,0.05);
+.hero-sun{
+  position:absolute;
+  width:132px;height:132px;border-radius:50%;
+  background:radial-gradient(circle at 42% 38%,#E0917F,#C05A48 68%,#B1483B);
+  opacity:0.78;
+  right:0px;bottom:10px;
+  box-shadow:0 10px 28px rgba(180,70,55,0.28);
 }
-.term-item h4 { font-size: 14px; color: #6B2D8E; margin-bottom: 4px; }
-.term-item p { font-size: 13px; color: #555; line-height: 1.6; }
-.classic-item {
-  background: white;
-  border-radius: 10px;
-  padding: 14px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 4px rgba(107,45,142,0.05);
-  border-left: 3px solid #8B3FB0;
+.hero-char{
+  position:relative;z-index:2;
+  font-family:var(--brush);
+  font-size:168px;
+  color:var(--ink);
+  line-height:1;
+  margin:-6px 6px 0 0;
+  text-shadow:3px 4px 0 rgba(166,58,46,0.06);
 }
-.classic-item h4 { font-size: 15px; color: #6B2D8E; margin-bottom: 6px; }
-.classic-item p { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 4px; }
-.site-item {
-  background: white;
-  border-radius: 10px;
-  padding: 14px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 4px rgba(107,45,142,0.05);
+.hero-meta{
+  text-align:center;margin-top:6px;
 }
-.site-item h4 { font-size: 15px; color: #6B2D8E; margin-bottom: 6px; }
-.site-item p { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 4px; }
-.home-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-.stat-card {
-  background: linear-gradient(135deg, #6B2D8E, #8B3FB0);
-  color: white;
-  border-radius: 12px;
-  padding: 14px 8px;
-  text-align: center;
+.hero-lunar{
+  font-family:var(--serif);font-size:13px;font-weight:400;
+  color:var(--ink-soft);letter-spacing:3px;
 }
-.stat-card .num { font-size: 24px; font-weight: 700; }
-.stat-card .label { font-size: 11px; opacity: 0.9; margin-top: 2px; }
-.home-section { margin-bottom: 16px; }
-.home-section h2 { font-size: 16px; color: #6B2D8E; margin-bottom: 10px; padding-left: 10px; border-left: 3px solid #6B2D8E; }
-.quick-link {
-  background: white;
-  border-radius: 10px;
-  padding: 12px 14px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 1px 4px rgba(107,45,142,0.05);
-  cursor: pointer;
+.hero-ganzhi{
+  display:inline-block;margin-top:8px;
+  padding:3px 14px;
+  border:1px solid var(--red);
+  border-radius:20px;
+  font-family:var(--serif);font-size:10.5px;color:var(--red);
+  letter-spacing:3px;
 }
-.quick-link .icon { font-size: 20px; }
-.quick-link .text { flex: 1; }
-.quick-link .text h4 { font-size: 14px; color: #333; }
-.quick-link .text p { font-size: 11px; color: #999; }
-.quick-link .arrow { color: #CCC; }
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 200;
-  display: none;
-  align-items: flex-end;
-  justify-content: center;
+.hero-time{
+  margin-top:14px;text-align:center;
+  font-family:var(--en-sans);font-size:7.5px;letter-spacing:3px;
+  color:var(--muted-light);text-transform:uppercase;
 }
-.modal-overlay.active { display: flex; }
-.modal {
-  background: white;
-  width: 100%;
-  max-width: 600px;
-  max-height: 85vh;
-  border-radius: 20px 20px 0 0;
-  padding: 20px;
-  overflow-y: auto;
-  animation: slideUp 0.3s ease;
+
+/* section label */
+.sec-label{
+  display:flex;align-items:center;gap:12px;
+  margin:30px 2px 16px;
 }
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.modal h2 { font-size: 18px; color: #6B2D8E; margin-bottom: 12px; text-align: center; }
-.modal .close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #F5EEF9;
-  border: none;
-  font-size: 18px;
-  color: #6B2D8E;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.sec-label .dot{width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;}
+.sec-label .zh{font-family:var(--serif);font-weight:600;font-size:15px;letter-spacing:4px;color:var(--ink);}
+.sec-label .en{font-family:var(--en-sans);font-size:9px;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;}
+.sec-label .line{flex:1;height:1px;background:var(--line);}
+
+/* ============ HOME: QUICK NAV (timeline style) ============ */
+.quicknav{
+  display:flex;justify-content:space-between;
+  padding:8px 6px 4px;
 }
-.modal img { width: 100%; max-height: 200px; object-fit: contain; border-radius: 10px; margin-bottom: 12px; background: #F9F5FC; }
-.modal p { font-size: 14px; line-height: 1.8; color: #4A3A5C; margin-bottom: 8px; }
-.modal .meta { background: #F9F5FC; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
-.modal .meta p { font-size: 12px; color: #6B2D8E; margin-bottom: 4px; }
-.tip-box {
-  background: linear-gradient(135deg, #FFF8E1, #FFF3CD);
-  border-radius: 10px;
-  padding: 12px 14px;
-  margin-bottom: 12px;
-  border-left: 4px solid #FAAD14;
+.qn-item{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  cursor:pointer;flex:1;
 }
-.tip-box p { font-size: 13px; color: #8B6914; line-height: 1.6; }
+.qn-char{
+  width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:500;font-size:18px;
+  color:var(--ink-soft);
+  background:var(--card);
+  box-shadow:var(--shadow-sm);
+  transition:all .3s;
+  position:relative;
+}
+.qn-item.active .qn-char{
+  background:var(--card-raised);
+  color:var(--red);
+  box-shadow:var(--shadow-inset);
+}
+.qn-item.active .qn-char::after{
+  content:'';position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);
+  width:4px;height:4px;border-radius:50%;background:var(--red);
+}
+.qn-item.active .qn-char::before{
+  content:'';position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);
+  width:1px;height:8px;background:var(--red);opacity:0.5;
+}
+.qn-label{font-family:var(--serif);font-size:11px;color:var(--muted);letter-spacing:2px;}
+.qn-item.active .qn-label{color:var(--red);}
+
+/* ============ TODAY EVENTS ============ */
+.event-card{
+  background:var(--card-raised);
+  border-radius:20px;
+  box-shadow:var(--shadow-sm);
+  padding:18px 20px;
+  margin-bottom:12px;
+  display:flex;gap:16px;align-items:flex-start;
+  transition:transform .25s;
+}
+.event-card:active{transform:scale(0.98);}
+.event-day{
+  flex-shrink:0;width:48px;
+  text-align:center;
+  border-right:1px solid var(--line-soft);
+  padding-right:14px;
+}
+.event-day .d{font-family:var(--en-serif);font-size:30px;font-weight:500;color:var(--red);line-height:1;}
+.event-day .m{font-family:var(--en-sans);font-size:8px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-top:3px;}
+.event-body{flex:1;min-width:0;}
+.event-title{font-family:var(--serif);font-weight:600;font-size:15px;color:var(--ink);letter-spacing:1.5px;}
+.event-en{font-family:var(--en-serif);font-style:italic;font-size:12px;color:var(--muted);margin-top:2px;}
+.event-desc{font-size:12.5px;color:var(--ink-soft);margin-top:7px;line-height:1.7;font-weight:300;}
+.event-tag{
+  display:inline-block;margin-top:8px;
+  font-family:var(--en-sans);font-size:8.5px;letter-spacing:1.5px;
+  color:var(--gold);text-transform:uppercase;
+}
+.empty-state{
+  text-align:center;padding:36px 20px;
+  color:var(--muted-light);
+}
+.empty-state .empty-char{font-family:var(--brush);font-size:40px;color:var(--line);margin-bottom:8px;}
+.empty-state .empty-txt{font-size:13px;letter-spacing:2px;}
+.empty-state .empty-en{font-family:var(--en-sans);font-size:9px;letter-spacing:2px;margin-top:4px;text-transform:uppercase;}
+
+/* teaching quote */
+.teaching{
+  margin-top:6px;
+  background:var(--card-raised);
+  border-radius:20px;box-shadow:var(--shadow-sm);
+  padding:22px 24px;text-align:center;
+}
+.teaching .eight{
+  display:flex;justify-content:center;gap:14px;flex-wrap:wrap;
+  margin:10px 0;
+}
+.teaching .eight span{
+  font-family:var(--serif);font-weight:500;font-size:20px;
+  color:var(--ink);letter-spacing:0;
+}
+.teaching .t-en{font-family:var(--en-serif);font-style:italic;font-size:12px;color:var(--muted);margin-top:6px;letter-spacing:1px;}
+.teaching .t-label{font-family:var(--en-sans);font-size:8.5px;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase;margin-top:8px;}
+
+/* ============ CALENDAR PAGE ============ */
+.cal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:14px 0 20px;
+}
+.cal-nav{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--card);box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--ink-soft);
+  border:none;
+}
+.cal-nav:active{box-shadow:var(--shadow-inset);}
+.cal-title{text-align:center;}
+.cal-title .ym{font-family:var(--serif);font-weight:600;font-size:20px;letter-spacing:4px;color:var(--ink);}
+.cal-title .en{font-family:var(--en-sans);font-size:9px;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;margin-top:2px;}
+.cal-card{
+  background:var(--card-raised);border-radius:28px;
+  box-shadow:var(--shadow);padding:24px 18px;
+}
+.cal-week{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  margin-bottom:8px;
+}
+.cal-week span{
+  text-align:center;font-family:var(--serif);font-size:12px;
+  color:var(--muted);letter-spacing:1px;padding:8px 0;
+}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-cell{
+  aspect-ratio:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:15px;color:var(--ink-soft);
+  border-radius:50%;cursor:pointer;position:relative;
+  transition:all .2s;
+}
+.cal-cell.empty{cursor:default;}
+.cal-cell.has-event{color:var(--red);font-weight:500;}
+.cal-cell.has-event::after{
+  content:'';position:absolute;bottom:5px;
+  width:4px;height:4px;border-radius:50%;background:var(--red);
+}
+.cal-cell.today{
+  background:var(--red);color:var(--card-raised);font-weight:600;
+  box-shadow:0 4px 12px rgba(166,58,46,0.35);
+}
+.cal-cell.today::after{background:var(--card-raised);}
+.cal-cell.selected:not(.today){
+  background:var(--card);box-shadow:var(--shadow-inset);
+}
+.cal-legend{
+  display:flex;justify-content:center;gap:20px;margin-top:16px;
+  font-size:11px;color:var(--muted);letter-spacing:1px;
+}
+.cal-legend i{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--red);margin-right:5px;vertical-align:middle;
+}
+.ics-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;margin-top:18px;
+  padding:16px;
+  background:var(--ink);color:var(--card-raised);
+  border:none;border-radius:18px;
+  font-family:var(--serif);font-size:14px;letter-spacing:3px;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(36,30,21,0.2);
+  transition:transform .2s;
+}
+.ics-btn:active{transform:scale(0.98);}
+.ics-btn .en{font-family:var(--en-sans);font-size:9px;letter-spacing:2px;opacity:0.6;text-transform:uppercase;}
+
+/* event detail on calendar */
+.cal-detail{
+  margin-top:18px;
+}
+.detail-card{
+  background:var(--card-raised);border-radius:20px;
+  box-shadow:var(--shadow-sm);padding:20px 22px;margin-bottom:12px;
+  border-left:3px solid var(--red);
+}
+.detail-card .dc-type{font-family:var(--en-sans);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;}
+.detail-card .dc-title{font-family:var(--serif);font-weight:600;font-size:17px;color:var(--ink);margin:4px 0 2px;letter-spacing:2px;}
+.detail-card .dc-en{font-family:var(--en-serif);font-style:italic;font-size:13px;color:var(--muted);}
+.detail-card .dc-sec{margin-top:12px;}
+.detail-card .dc-sec-h{font-family:var(--serif);font-size:12px;font-weight:600;color:var(--gold);letter-spacing:2px;margin-bottom:4px;}
+.detail-card .dc-sec p{font-size:13px;color:var(--ink-soft);line-height:1.8;font-weight:300;}
+
+/* ============ DEITIES PAGE ============ */
+.search-box{
+  margin:14px 0 16px;
+  background:var(--card-raised);border-radius:18px;
+  box-shadow:var(--shadow-inset);
+  padding:13px 18px;
+  display:flex;align-items:center;gap:12px;
+}
+.search-box input{
+  flex:1;border:none;background:transparent;outline:none;
+  font-family:var(--serif);font-size:13px;color:var(--ink);
+}
+.search-box input::placeholder{color:var(--muted-light);letter-spacing:1px;}
+.search-box svg{flex-shrink:0;}
+.filter-tags{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;
+}
+.f-tag{
+  padding:7px 15px;border-radius:20px;
+  background:var(--card);box-shadow:var(--shadow-sm);
+  font-family:var(--serif);font-size:12px;color:var(--ink-soft);
+  letter-spacing:1px;cursor:pointer;transition:all .25s;
+  border:none;
+}
+.f-tag.active{
+  background:var(--red);color:var(--card-raised);
+  box-shadow:0 4px 12px rgba(166,58,46,0.3);
+}
+.deity-card{
+  background:var(--card-raised);border-radius:22px;
+  box-shadow:var(--shadow-sm);
+  padding:16px;margin-bottom:14px;
+  display:flex;gap:16px;align-items:center;
+  cursor:pointer;transition:transform .25s;
+}
+.deity-card:active{transform:scale(0.98);}
+.deity-img{
+  width:68px;height:68px;border-radius:16px;
+  object-fit:cover;flex-shrink:0;
+  box-shadow:0 4px 10px rgba(120,95,55,0.15);
+  background:#E8DFCE;
+}
+.deity-info{flex:1;min-width:0;}
+.deity-name{font-family:var(--serif);font-weight:600;font-size:18px;color:var(--ink);letter-spacing:2px;}
+.deity-en{font-family:var(--en-serif);font-style:italic;font-size:12px;color:var(--muted);margin-top:1px;}
+.deity-role{font-size:12px;color:var(--ink-soft);margin-top:5px;letter-spacing:1px;}
+.deity-arrow{color:var(--muted-light);flex-shrink:0;}
+
+/* ============ CLASSICS PAGE ============ */
+.classic-tabs{
+  display:flex;gap:8px;margin:14px 0 18px;
+}
+.c-tab{
+  flex:1;padding:11px 4px;border-radius:14px;
+  background:var(--card);box-shadow:var(--shadow-sm);
+  border:none;cursor:pointer;
+  font-family:var(--serif);font-size:13px;color:var(--ink-soft);
+  letter-spacing:2px;transition:all .25s;
+}
+.c-tab.active{
+  background:var(--card-raised);color:var(--red);
+  box-shadow:var(--shadow-inset);font-weight:600;
+}
+.classic-tabs.three .c-tab{font-size:12.5px;letter-spacing:3px;padding:11px 2px;}
+/* rites (威儀) */
+.yi-card{
+  background:var(--card-raised);border-radius:22px;
+  box-shadow:var(--shadow);padding:22px 24px 20px;margin-bottom:16px;
+}
+.yi-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.yi-no{
+  font-family:var(--brush);font-size:34px;color:var(--red);
+  line-height:1;opacity:0.9;min-width:40px;
+}
+.yi-title{font-family:var(--serif);font-weight:700;font-size:20px;letter-spacing:3px;color:var(--ink);}
+.yi-en{font-family:var(--en-sans);font-size:7.5px;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase;margin-top:3px;}
+.yi-steps{list-style:none;}
+.yi-steps li{
+  position:relative;padding:7px 0 7px 26px;
+  font-size:13.5px;color:var(--ink-soft);line-height:1.7;font-weight:300;
+  border-left:1px solid var(--line-soft);margin-left:8px;padding-left:22px;
+}
+.yi-steps li::before{
+  content:'';position:absolute;left:-4px;top:15px;
+  width:7px;height:7px;border-radius:50%;background:var(--red);opacity:0.85;
+}
+.yi-steps li:last-child{border-left:1px solid transparent;}
+.yi-note{
+  margin-top:12px;padding:10px 14px;border-radius:12px;
+  background:rgba(166,58,46,0.06);
+  font-size:12px;color:var(--red);letter-spacing:1px;line-height:1.7;
+}
+.classic-card{
+  background:var(--card-raised);border-radius:24px;
+  box-shadow:var(--shadow);padding:28px 26px;margin-bottom:16px;
+  cursor:pointer;transition:transform .25s;position:relative;overflow:hidden;
+}
+.classic-card:active{transform:scale(0.99);}
+.classic-card .cc-mark{
+  position:absolute;right:18px;top:10px;
+  font-family:var(--cao);font-size:78px;color:var(--line);opacity:0.55;
+}
+.classic-card .cc-en{font-family:var(--en-sans);font-size:7.5px;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase;}
+.classic-card .cc-title{font-family:var(--serif);font-weight:700;font-size:25px;color:var(--ink);margin:10px 0 3px;letter-spacing:3px;}
+.classic-card .cc-sub{font-family:var(--en-serif);font-style:italic;font-size:13px;color:var(--muted);}
+.classic-card .cc-desc{font-size:12.5px;color:var(--ink-soft);margin-top:14px;line-height:1.9;font-weight:300;}
+.classic-card .cc-go{
+  margin-top:16px;display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--en-sans);font-size:8.5px;letter-spacing:2px;
+  color:var(--red);text-transform:uppercase;
+}
+/* reader */
+.reader{
+  position:absolute;inset:0;background:var(--bg);
+  z-index:50;display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;transition:opacity .35s;
+}
+.reader.open{opacity:1;pointer-events:auto;}
+.reader-bar{
+  padding:18px 22px;display:flex;align-items:center;gap:14px;flex-shrink:0;
+}
+.reader-back{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--card);box-shadow:var(--shadow-sm);
+  border:none;display:flex;align-items:center;justify-content:center;
+  color:var(--ink-soft);cursor:pointer;
+}
+.reader-title{flex:1;}
+.reader-title .rt{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:3px;color:var(--ink);}
+.reader-title .re{font-family:var(--en-serif);font-style:italic;font-size:12px;color:var(--muted);}
+.reader-body{
+  flex:1;overflow-y:auto;padding:6px 28px 40px;
+  scrollbar-width:none;
+}
+.reader-body::-webkit-scrollbar{display:none;}
+.reader-body .chapter{
+  font-family:var(--serif);font-weight:600;font-size:16px;
+  color:var(--red);letter-spacing:3px;margin:26px 0 12px;
+  text-align:center;
+}
+.reader-body .chapter:first-child{margin-top:8px;}
+.reader-body p{
+  font-family:var(--serif);font-size:15.5px;font-weight:300;
+  color:var(--ink);line-height:2.1;letter-spacing:1px;
+  margin-bottom:14px;text-align:justify;
+}
+.reader-body .verse{
+  text-align:center;font-size:16px;line-height:2.2;
+  color:var(--ink-soft);
+}
+
+/* sites */
+.site-card{
+  background:var(--card-raised);border-radius:22px;
+  box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:16px;
+}
+.site-img{
+  width:100%;height:150px;object-fit:cover;
+  filter:sepia(0.15) saturate(0.9);
+}
+.site-body{padding:20px 22px 22px;}
+.site-tag{
+  display:inline-block;margin-bottom:10px;
+  padding:3px 12px;border-radius:12px;
+  background:rgba(166,58,46,0.08);color:var(--red);
+  font-family:var(--serif);font-size:10.5px;letter-spacing:2px;
+}
+.site-name{font-family:var(--serif);font-weight:700;font-size:21px;letter-spacing:2px;color:var(--ink);}
+.site-en{font-family:var(--en-serif);font-style:italic;font-size:13px;color:var(--muted);margin-top:3px;}
+.site-loc{
+  display:inline-flex;align-items:center;gap:5px;margin-top:10px;
+  font-size:11px;color:var(--gold);letter-spacing:1px;
+}
+.site-desc{font-size:12.5px;color:var(--ink-soft);margin-top:10px;line-height:1.95;font-weight:300;}
+
+/* ============ DIVINATION PAGE ============ */
+.divi-wrap{
+  min-height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:20px 0;
+}
+.divi-hero{
+  text-align:center;margin-bottom:10px;
+}
+.divi-en-top{font-family:var(--en-sans);font-size:7.5px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;}
+.divi-char{
+  font-family:var(--brush);font-size:160px;color:var(--red);
+  line-height:1.1;margin:10px 0 4px;
+  position:relative;display:inline-block;
+}
+.divi-sub{font-family:var(--serif);font-size:14px;color:var(--ink-soft);letter-spacing:10px;padding-left:10px;}
+.divi-en-sub{font-family:var(--en-serif);font-style:italic;font-size:13px;color:var(--muted);margin-top:6px;letter-spacing:2px;}
+.divi-card{
+  width:100%;margin-top:26px;
+  background:var(--card-raised);border-radius:28px;
+  box-shadow:var(--shadow);padding:30px 26px;text-align:center;
+}
+.divi-tip{
+  font-family:var(--serif);font-size:14px;color:var(--ink-soft);
+  line-height:2;letter-spacing:2px;
+}
+.divi-tip .en{
+  display:block;font-family:var(--en-serif);font-style:italic;
+  font-size:12px;color:var(--muted);margin-top:8px;letter-spacing:1px;
+}
+.divi-btn{
+  margin-top:26px;
+  width:100%;padding:17px;
+  background:linear-gradient(135deg,#B04538,#923027);
+  color:var(--card-raised);border:none;border-radius:18px;
+  font-family:var(--serif);font-size:16px;letter-spacing:8px;padding-left:24px;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(166,58,46,0.35);
+  transition:transform .2s;
+}
+.divi-btn:active{transform:scale(0.98);}
+.divi-btn .en{
+  display:block;font-family:var(--en-sans);font-size:8.5px;
+  letter-spacing:3px;opacity:0.65;margin-top:3px;text-transform:uppercase;
+}
+/* result */
+.divi-result{display:none;}
+.divi-result.show{display:block;animation:fadeUp .6s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+/* ===== coin casting animation ===== */
+.coin-stage{text-align:center;padding:26px 0 8px;}
+.coin-cast-title{font-family:var(--serif);font-size:18px;letter-spacing:8px;color:var(--ink);padding-left:8px;}
+.coin-cast-en{font-family:var(--en-sans);font-size:8px;letter-spacing:3.5px;color:var(--muted);text-transform:uppercase;margin-top:8px;}
+.coin-row{display:flex;justify-content:center;gap:30px;margin:34px 0 30px;}
+.coin{
+  width:60px;height:60px;border-radius:50%;position:relative;
+  background:radial-gradient(circle at 36% 30%,#E2C488 0%,#C39E5C 45%,#A8823F 72%,#8A6833 100%);
+  box-shadow:0 8px 18px rgba(120,90,40,0.32),inset 0 0 0 2px rgba(255,240,200,0.35),inset 0 -3px 6px rgba(90,66,25,0.4);
+  animation:coinShake 0.42s linear infinite;
+}
+.coin:nth-child(2){animation-delay:0.12s;}
+.coin:nth-child(3){animation-delay:0.24s;}
+.coin::before{
+  content:'';position:absolute;top:50%;left:50%;width:15px;height:15px;
+  transform:translate(-50%,-50%) rotate(45deg);
+  background:var(--card-raised);
+  box-shadow:inset 0 1px 3px rgba(90,66,25,0.55),0 0 0 1.5px rgba(120,90,40,0.55);
+}
+.coin::after{
+  content:'寶';position:absolute;top:9px;left:0;right:0;text-align:center;
+  font-family:var(--serif);font-weight:700;font-size:13px;color:rgba(96,68,26,0.82);
+}
+.coin.settle{animation:coinSettle 0.55s cubic-bezier(.2,.8,.3,1.3) forwards;}
+@keyframes coinShake{
+  0%{transform:translateY(0) rotateY(0) rotateZ(0);}
+  25%{transform:translateY(-22px) rotateY(180deg) rotateZ(12deg);}
+  50%{transform:translateY(2px) rotateY(360deg) rotateZ(0);}
+  75%{transform:translateY(-14px) rotateY(540deg) rotateZ(-10deg);}
+  100%{transform:translateY(0) rotateY(720deg) rotateZ(0);}
+}
+@keyframes coinSettle{
+  0%{transform:translateY(-10px) rotateY(0);}
+  60%{transform:translateY(3px) rotateY(180deg);}
+  100%{transform:translateY(0) rotateY(360deg);}
+}
+.hex-lines{
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+  margin:10px 0 20px;
+}
+.hex-line{display:flex;gap:7px;justify-content:center;opacity:0;animation:lineIn .4s ease forwards;}
+@keyframes lineIn{from{opacity:0;transform:translateX(-14px);}to{opacity:1;transform:translateX(0);}}
+.hex-line .seg{width:52px;height:7px;background:var(--ink);border-radius:1px;}
+.hex-line .seg.yang{width:111px;}
+.hex-line.broken .seg{background:var(--red);}
+.hex-line.broken .gap{width:7px;}
+.gua-name{font-family:var(--serif);font-weight:700;font-size:33px;color:var(--ink);letter-spacing:6px;padding-left:6px;}
+.gua-no{font-family:var(--en-serif);font-style:italic;font-size:14px;color:var(--muted);margin-top:4px;}
+.gua-block{
+  margin-top:22px;text-align:left;
+  background:var(--card);border-radius:16px;padding:18px 20px;
+  box-shadow:var(--shadow-inset);
+}
+.gua-block .gb-h{
+  font-family:var(--serif);font-weight:600;font-size:13px;
+  color:var(--red);letter-spacing:3px;margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.gua-block .gb-h::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--red);}
+.gua-block .gb-en{font-family:var(--en-sans);font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:300;}
+.gua-block p{font-size:14px;color:var(--ink-soft);line-height:1.95;font-weight:300;}
+.gua-note{
+  margin-top:18px;text-align:center;
+  font-size:11.5px;color:var(--muted-light);letter-spacing:1.5px;
+}
+
+/* ============ BOTTOM NAV ============ */
+.bottom-nav{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(245,239,228,0.88);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-top:1px solid var(--line-soft);
+  padding:12px 10px 22px;
+  display:flex;justify-content:space-around;
+  z-index:40;
+}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;padding:4px 10px;
+  color:var(--muted);
+  transition:color .3s;
+  background:none;border:none;
+}
+.nav-item.active{color:var(--red);}
+.nav-item .nav-label{
+  font-family:var(--serif);font-size:10px;letter-spacing:2px;
+}
+.nav-item .nav-en{
+  font-family:var(--en-sans);font-size:7px;letter-spacing:1.5px;
+  text-transform:uppercase;opacity:0.8;
+}
+.nav-item svg{transition:transform .3s;}
+.nav-item.active svg{transform:translateY(-2px);}
+
+/* modal for deity detail */
+.modal{
+  position:absolute;inset:0;z-index:60;
+  background:rgba(36,30,21,0.35);
+  backdrop-filter:blur(4px);
+  display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.modal.open{opacity:1;pointer-events:auto;}
+.modal-sheet{
+  width:100%;max-height:82%;
+  background:var(--bg);
+  border-radius:32px 32px 0 0;
+  padding:14px 26px 36px;
+  overflow-y:auto;
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);
+  scrollbar-width:none;
+}
+.modal-sheet::-webkit-scrollbar{display:none;}
+.modal.open .modal-sheet{transform:translateY(0);}
+.modal-grip{width:40px;height:4px;border-radius:2px;background:var(--line);margin:6px auto 18px;}
+.modal-deity-img{
+  width:100%;height:220px;object-fit:cover;border-radius:20px;
+  box-shadow:var(--shadow-sm);background:#E8DFCE;
+}
+.modal-deity-name{font-family:var(--serif);font-weight:700;font-size:28px;letter-spacing:3px;color:var(--ink);margin-top:18px;}
+.modal-deity-en{font-family:var(--en-serif);font-style:italic;font-size:15px;color:var(--muted);margin-top:3px;}
+.modal-deity-role{
+  display:inline-block;margin-top:10px;
+  padding:5px 14px;border:1px solid var(--gold);border-radius:16px;
+  font-size:12px;color:var(--gold);letter-spacing:2px;
+}
+.modal-sec{margin-top:20px;}
+.modal-sec h4{
+  font-family:var(--serif);font-weight:600;font-size:14px;color:var(--red);
+  letter-spacing:3px;margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.modal-sec h4::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--red);}
+.modal-sec p{font-size:14px;color:var(--ink-soft);line-height:1.95;font-weight:300;}
+.modal-close{
+  width:100%;margin-top:24px;padding:14px;
+  background:var(--card);box-shadow:var(--shadow-sm);
+  border:none;border-radius:16px;
+  font-family:var(--serif);font-size:14px;letter-spacing:3px;color:var(--ink-soft);
+  cursor:pointer;
+}
+
+/* fade animation for hero char */
+@keyframes gentleFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+.hero-char{animation:gentleFloat 5s ease-in-out infinite;}
+
+/* ============ SPLASH 开屏 ============ */
+.splash{
+  position:absolute;inset:0;z-index:100;
+  background:radial-gradient(circle at 50% 42%,#F2EBDD,#E8E0D1 75%);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  animation:splashOut .7s cubic-bezier(.4,0,.2,1) 3.0s forwards;
+}
+.splash-ink{
+  position:absolute;top:50%;left:50%;
+  width:420px;height:420px;border-radius:50%;
+  transform:translate(-50%,-50%) scale(0.2);
+  background:radial-gradient(circle,rgba(166,58,46,0.16) 0%,rgba(166,58,46,0.07) 45%,transparent 70%);
+  animation:inkSpread 1.5s cubic-bezier(.2,.7,.3,1) .85s forwards;
+  opacity:0;
+}
+.splash-stage{position:relative;text-align:center;z-index:2;}
+.splash-seal-wrap{
+  position:relative;width:96px;height:96px;
+  margin:0 auto 26px;
+  display:flex;align-items:center;justify-content:center;
+}
+.splash-seal{
+  width:78px;height:78px;border-radius:10px;
+  background:linear-gradient(145deg,#B54538,#96301F);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:700;font-size:44px;color:#F5EFE4;
+  box-shadow:0 10px 26px rgba(150,48,31,0.4),inset 0 0 6px rgba(0,0,0,0.15);
+  opacity:0;
+  animation:sealDrop 1s cubic-bezier(.2,.8,.3,1.2) .1s forwards;
+}
+.splash-ripple{
+  position:absolute;top:50%;left:50%;
+  width:78px;height:78px;border-radius:12px;
+  border:2px solid rgba(166,58,46,0.6);
+  transform:translate(-50%,-50%) scale(0.4);
+  opacity:0;
+  animation:ripple 1s ease-out .82s forwards;
+}
+.splash-title{
+  display:flex;justify-content:center;gap:6px;
+  font-family:var(--brush);font-size:58px;color:var(--ink);line-height:1;
+}
+.st-char{
+  display:inline-block;opacity:0;
+  animation:charIn .7s cubic-bezier(.2,.8,.3,1) forwards;
+  text-shadow:2px 3px 0 rgba(166,58,46,0.07);
+}
+.st-char:nth-child(1){animation-delay:1.15s;}
+.st-char:nth-child(2){animation-delay:1.35s;}
+.st-char:nth-child(3){animation-delay:1.55s;}
+.splash-en{
+  margin-top:16px;
+  font-family:var(--en-sans);font-size:8px;font-weight:300;
+  letter-spacing:4px;color:var(--muted);text-transform:uppercase;
+  opacity:0;animation:fadeIn .9s ease 1.85s forwards;
+}
+.splash-line{
+  width:0;height:1px;margin:18px auto 0;
+  background:linear-gradient(90deg,transparent,var(--red),transparent);
+  animation:lineGrow .8s ease 2.05s forwards;
+}
+.splash-sub{
+  margin-top:16px;
+  font-family:var(--serif);font-size:12px;letter-spacing:5px;
+  color:var(--ink-soft);padding-left:5px;
+  opacity:0;animation:fadeIn .9s ease 2.2s forwards;
+}
+.splash-vert{
+  position:absolute;top:50%;
+  writing-mode:vertical-rl;
+  font-family:var(--serif);font-size:13px;letter-spacing:9px;
+  color:var(--muted);
+  opacity:0;animation:fadeIn 1.1s ease 1.7s forwards;
+}
+.sv-l{left:-78px;transform:translateY(-50%);}
+.sv-r{right:-78px;transform:translateY(-50%);}
+@keyframes sealDrop{
+  0%{opacity:0;transform:translateY(-95px) scale(2.7) rotate(-14deg);}
+  55%{opacity:1;}
+  72%{transform:translateY(0) scale(0.9) rotate(0);}
+  82%{transform:translateY(0) scale(1.13);}
+  91%{transform:scale(0.98);}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0);}
+}
+@keyframes ripple{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(0.4);}
+  20%{opacity:0.55;}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.3);}
+}
+@keyframes inkSpread{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(0.2);}
+  35%{opacity:1;}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1);}
+}
+@keyframes charIn{
+  0%{opacity:0;transform:translateY(18px) scale(0.75);}
+  100%{opacity:1;transform:translateY(0) scale(1);}
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes lineGrow{0%{width:0;opacity:0;}100%{width:96px;opacity:1;}}
+@keyframes splashOut{
+  0%{opacity:1;transform:scale(1);filter:blur(0);}
+  100%{opacity:0;transform:scale(1.1);filter:blur(6px);visibility:hidden;}
+}
+/* home content entrance after splash */
+@keyframes homeIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+#page-home.active .hero{animation:homeIn .8s ease 3.1s both;}
+#page-home.active .sec-label,#page-home.active .quicknav,#page-home.active .teaching,#page-home.active #todayEvents{animation:homeIn .7s ease 3.3s both;}
+@media(prefers-reduced-motion:reduce){
+  .splash{animation:none;opacity:0;visibility:hidden;}
+  #page-home.active .hero,#page-home.active .sec-label{animation:none;}
+}
 </style>
 </head>
 <body>
+<div class="phone-wrap">
+<div class="phone">
 
-<div class="header">
-  <h1>道教净明宗 日历一览</h1>
-  <div class="subtitle">Jingming Sect Calendar · 忠孝廉慎 垂世八宝</div>
+  <!-- ============ SPLASH 开屏动画 ============ -->
+  <div class="splash" id="splash">
+    <div class="splash-ink"></div>
+    <div class="splash-stage">
+      <div class="splash-seal-wrap">
+        <div class="splash-ripple"></div>
+        <div class="splash-seal">淨</div>
+      </div>
+      <div class="splash-title">
+        <span class="st-char">淨</span><span class="st-char">明</span><span class="st-char">宗</span>
+      </div>
+      <div class="splash-en">JINGMING&nbsp;DAO&nbsp;·&nbsp;PURE&nbsp;BRIGHTNESS</div>
+      <div class="splash-vert sv-l">忠孝廉謹</div>
+      <div class="splash-vert sv-r">寬裕容忍</div>
+      <div class="splash-line"></div>
+      <div class="splash-sub">道教正一淨明宗 · 日曆一覽</div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="brand">
+      <div class="brand-seal">淨</div>
+      <div>
+        <div class="brand-name">淨明宗</div>
+        <div class="brand-en">Jingming Dao</div>
+      </div>
+    </div>
+    <div class="header-right" id="headerDate">EST. 2026</div>
+  </div>
+
+  <!-- PAGES -->
+  <div class="pages">
+
+    <!-- ============ HOME ============ -->
+    <div class="page active" id="page-home">
+      <div class="hero">
+        <div class="hero-en">TODAY · ALMANAC</div>
+        <div class="hero-date-en" id="heroDateEn"></div>
+        <div class="hero-center">
+          <div class="vert-text left">忠孝廉謹</div>
+          <div class="hero-big">
+            <div class="hero-sun"></div>
+            <div class="hero-char" id="heroChar">申</div>
+          </div>
+          <div class="vert-text">寬裕容忍</div>
+        </div>
+        <div class="hero-meta">
+          <div class="hero-lunar" id="heroLunar">農曆 · 九月十八</div><br>
+          <span class="hero-ganzhi" id="heroGanzhi">甲申日</span>
+        </div>
+        <div class="hero-time" id="heroTime"></div>
+      </div>
+
+      <div class="sec-label">
+        <span class="dot"></span>
+        <span class="zh">門徑</span>
+        <span class="en">Gateway</span>
+        <span class="line"></span>
+      </div>
+      <div class="quicknav">
+        <div class="qn-item active" onclick="goPage('home')">
+          <div class="qn-char">首</div>
+          <div class="qn-label">今日</div>
+        </div>
+        <div class="qn-item" onclick="goPage('calendar')">
+          <div class="qn-char">曆</div>
+          <div class="qn-label">道曆</div>
+        </div>
+        <div class="qn-item" onclick="goPage('deities')">
+          <div class="qn-char">仙</div>
+          <div class="qn-label">仙真</div>
+        </div>
+        <div class="qn-item" onclick="goPage('classics')">
+          <div class="qn-char">典</div>
+          <div class="qn-label">典藏</div>
+        </div>
+        <div class="qn-item" onclick="goPage('divination')">
+          <div class="qn-char">籤</div>
+          <div class="qn-label">靈籤</div>
+        </div>
+      </div>
+
+      <div class="sec-label">
+        <span class="dot"></span>
+        <span class="zh">今日所宜</span>
+        <span class="en">Today's Observance</span>
+        <span class="line"></span>
+      </div>
+      <div id="todayEvents"></div>
+
+      <div class="sec-label">
+        <span class="dot"></span>
+        <span class="zh">垂世八寶</span>
+        <span class="en">Eight Treasures</span>
+        <span class="line"></span>
+      </div>
+      <div class="teaching">
+        <div class="eight">
+          <span>忠</span><span>孝</span><span>廉</span><span>謹</span>
+          <span>寬</span><span>裕</span><span>容</span><span>忍</span>
+        </div>
+        <div class="t-en">Loyalty · Filial Piety · Integrity · Prudence<br>Tolerance · Generosity · Forbearance · Patience</div>
+        <div class="t-label">NET MING TEACHING</div>
+      </div>
+    </div>
+
+    <!-- ============ CALENDAR ============ -->
+    <div class="page" id="page-calendar">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="changeMonth(-1)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="cal-title">
+          <div class="ym" id="calYM">2026年 9月</div>
+          <div class="en">Lunar Almanac</div>
+        </div>
+        <button class="cal-nav" onclick="changeMonth(1)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="cal-card">
+        <div class="cal-week">
+          <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-legend">
+          <span><i></i>道門節日</span>
+          <span style="color:var(--red);">● 今日</span>
+        </div>
+      </div>
+      <button class="ics-btn" onclick="exportICS()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+        </svg>
+        一鍵導入手機日曆
+        <span class="en">Export ICS</span>
+      </button>
+      <div class="sec-label"><span class="dot"></span><span class="zh">節日詳錄</span><span class="en">Details</span><span class="line"></span></div>
+      <div class="cal-detail" id="calDetail"></div>
+    </div>
+
+    <!-- ============ DEITIES ============ -->
+    <div class="page" id="page-deities">
+      <div class="search-box">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9C8F7A" stroke-width="1.5">
+          <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+        </svg>
+        <input type="text" id="deitySearch" placeholder="搜尋仙真名號、神職…" oninput="renderDeities()">
+      </div>
+      <div class="filter-tags" id="deityTags"></div>
+      <div id="deityList"></div>
+    </div>
+
+    <!-- ============ CLASSICS ============ -->
+    <div class="page" id="page-classics">
+      <div class="classic-tabs three">
+        <button class="c-tab active" onclick="switchClassicTab(this,'jing')">經典</button>
+        <button class="c-tab" onclick="switchClassicTab(this,'sites')">勝跡</button>
+        <button class="c-tab" onclick="switchClassicTab(this,'yi')">威儀</button>
+      </div>
+      <div id="classicJing">
+        <div class="classic-card" onclick="openReader(0)">
+          <div class="cc-mark">課</div>
+          <div class="cc-en">Daily Liturgy · Morning & Evening</div>
+          <div class="cc-title">淨明早晚課誦本</div>
+          <div class="cc-sub">Jingming Daily Liturgy</div>
+          <div class="cc-desc">道門四眾日用修持之常課。含早晚課軌儀、淨心淨口等八大神咒、《高上玉皇心印妙經》全文及《許祖寶誥》，為淨明弟子晨昏課誦、清淨三業之依憑。</div>
+          <div class="cc-go">誦讀全文 Read Liturgy →</div>
+        </div>
+        <div class="classic-card" onclick="openReader(1)">
+          <div class="cc-mark">靜</div>
+          <div class="cc-en">Scripture of Clarity & Stillness</div>
+          <div class="cc-title">太上老君說常清靜經</div>
+          <div class="cc-sub">Classic of Purity & Stillness</div>
+          <div class="cc-desc">道教早晚功課必誦經典，闡明"人能常清靜，天地悉皆歸"之旨，為淨明派修心之要訣。全文簡短精深，凡三百餘字。</div>
+          <div class="cc-go">誦讀全文 Read Scripture →</div>
+        </div>
+        <div class="classic-card" onclick="openReader(2)">
+          <div class="cc-mark">道</div>
+          <div class="cc-en">Tao Te Ching</div>
+          <div class="cc-title">道德經</div>
+          <div class="cc-sub">The Book of the Way</div>
+          <div class="cc-desc">老子所著，道家根本經典，凡五千言。分道經、德經上下兩篇，為東方哲學之源泉，亦為淨明道之所宗。</div>
+          <div class="cc-go">誦讀全文 Read Scripture →</div>
+        </div>
+        <div class="classic-card" onclick="openReader(3)">
+          <div class="cc-mark">應</div>
+          <div class="cc-en">Tractate of Actions & Retributions</div>
+          <div class="cc-title">太上感應篇</div>
+          <div class="cc-sub">Treatise on Response & Retribution</div>
+          <div class="cc-desc">道教善書之首，闡明"禍福無門，惟人自召；善惡之報，如影隨形"之因果觀，與淨明忠孝之旨相表裡。</div>
+          <div class="cc-go">誦讀全文 Read Scripture →</div>
+        </div>
+        <div class="classic-card" onclick="openReader(4)">
+          <div class="cc-mark">忠</div>
+          <div class="cc-en">Book of Loyalty & Filial Piety</div>
+          <div class="cc-title">淨明忠孝全書</div>
+          <div class="cc-sub">Complete Writings of Jingming</div>
+          <div class="cc-desc">淨明道之根本典籍，元代劉玉等編纂，以"忠孝"立教，主張"欲修仙道，先修人道"，為淨明派立教之綱宗。</div>
+          <div class="cc-go">誦讀全文 Read Scripture →</div>
+        </div>
+      </div>
+      <div id="classicSites" style="display:none;"></div>
+      <div id="classicYi" style="display:none;"></div>
+    </div>
+
+    <!-- ============ DIVINATION ============ -->
+    <div class="page" id="page-divination">
+      <div class="divi-wrap">
+        <div class="divi-hero">
+          <div class="divi-en-top">SIX LINES ORACLE</div>
+          <div class="divi-char">易</div>
+          <div class="divi-sub">六爻神課</div>
+          <div class="divi-en-sub">The Book of Changes · Sincerity Reveals</div>
+        </div>
+        <div class="divi-card">
+          <div id="diviIntro">
+            <div class="divi-tip">
+              靜心凝神，心中默唸所問之事<br>
+              而後誠心起卦，以決狐疑
+              <span class="en">Still your mind. Hold your question in silence.<br>Cast with sincerity, and the hexagram shall answer.</span>
+            </div>
+            <button class="divi-btn" onclick="castHexagram()">
+              誠 心 起 卦
+              <span class="en">Cast the Hexagram</span>
+            </button>
+          </div>
+          <div class="divi-result" id="diviResult"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- READER OVERLAY -->
+  <div class="reader" id="reader">
+    <div class="reader-bar">
+      <button class="reader-back" onclick="closeReader()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="reader-title">
+        <div class="rt" id="readerTitle"></div>
+        <div class="re" id="readerEn"></div>
+      </div>
+    </div>
+    <div class="reader-body" id="readerBody"></div>
+  </div>
+
+  <!-- DEITY MODAL -->
+  <div class="modal" id="deityModal" onclick="if(event.target===this)closeDeity()">
+    <div class="modal-sheet">
+      <div class="modal-grip"></div>
+      <div id="modalContent"></div>
+      <button class="modal-close" onclick="closeDeity()">合 上 Close</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-item active" data-page="home" onclick="goPage('home')">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+        <path d="M3 11l9-8 9 8M5 10v10h14V10"/><path d="M9 20v-6h6v6"/>
+      </svg>
+      <span class="nav-label">今日</span><span class="nav-en">Today</span>
+    </button>
+    <button class="nav-item" data-page="calendar" onclick="goPage('calendar')">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+        <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/>
+      </svg>
+      <span class="nav-label">道曆</span><span class="nav-en">Almanac</span>
+    </button>
+    <button class="nav-item" data-page="deities" onclick="goPage('deities')">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+        <circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/>
+      </svg>
+      <span class="nav-label">仙真</span><span class="nav-en">Immortals</span>
+    </button>
+    <button class="nav-item" data-page="classics" onclick="goPage('classics')">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+        <path d="M4 5a2 2 0 012-2h12v18H6a2 2 0 00-2 2V5z"/><path d="M18 3v18M8 7h6M8 11h6"/>
+      </svg>
+      <span class="nav-label">典藏</span><span class="nav-en">Classics</span>
+    </button>
+    <button class="nav-item" data-page="divination" onclick="goPage('divination')">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+        <circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18M3 12h18"/>
+        <circle cx="12" cy="12" r="3.2" fill="currentColor" stroke="none"/>
+      </svg>
+      <span class="nav-label">靈籤</span><span class="nav-en">Oracle</span>
+    </button>
+  </div>
+
+</div>
 </div>
 
-<div class="content">
-
-  <!-- 首页 -->
-  <div class="page active" id="page-home">
-    <div class="home-stats">
-      <div class="stat-card"><div class="num">58</div><div class="label">道教日程</div></div>
-      <div class="stat-card"><div class="num">73</div><div class="label">神仙体系</div></div>
-      <div class="stat-card"><div class="num">54</div><div class="label">道教练语</div></div>
-    </div>
-
-    <div class="home-section">
-      <h2>今日宜忌</h2>
-      <div class="card" id="today-info">
-        <p>加载中...</p>
-      </div>
-    </div>
-
-    <div class="home-section">
-      <h2>快速入口</h2>
-      <div class="quick-link" onclick="switchPage('calendar')">
-        <div class="icon">📅</div>
-        <div class="text"><h4>日历概览</h4><p>查看58个道教日程</p></div>
-        <div class="arrow">›</div>
-      </div>
-      <div class="quick-link" onclick="switchPage('deity')">
-        <div class="icon">🏛️</div>
-        <div class="text"><h4>神仙体系</h4><p>73位道教神仙介绍</p></div>
-        <div class="arrow">›</div>
-      </div>
-      <div class="quick-link" onclick="switchPage('terms')">
-        <div class="icon">📖</div>
-        <div class="text"><h4>道教练语</h4><p>54个常用术语解释</p></div>
-        <div class="arrow">›</div>
-      </div>
-      <div class="quick-link" onclick="switchPage('classics')">
-        <div class="icon">📜</div>
-        <div class="text"><h4>经典导读</h4><p>道教经典学习路径</p></div>
-        <div class="arrow">›</div>
-      </div>
-      <div class="quick-link" onclick="switchPage('sites')">
-        <div class="icon">⛩️</div>
-        <div class="text"><h4>名胜古迹</h4><p>道教宫观巡礼指南</p></div>
-        <div class="arrow">›</div>
-      </div>
-    </div>
-
-    <div class="home-section">
-      <h2>净明教旨</h2>
-      <div class="card">
-        <p><strong>忠孝廉慎</strong> — 净明道核心教旨</p>
-        <p><strong>垂世八宝</strong> — 忠、孝、廉、谨、宽、裕、容、忍</p>
-        <p><strong>修行理念</strong> — 欲修仙道，先修人道；人道圆满，仙道自成</p>
-        <p><strong>祖师</strong> — 净明普化天尊（许真君）</p>
-        <p><strong>祖庭</strong> — 南昌西山万寿宫</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- 日历页 -->
-  <div class="page" id="page-calendar">
-    <div class="calendar-header">
-      <button onclick="changeMonth(-1)">‹ 上月</button>
-      <h3 id="calendar-title">2026年9月</h3>
-      <button onclick="changeMonth(1)">下月 ›</button>
-    </div>
-    <div class="weekday-row">
-      <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
-    </div>
-    <div class="calendar-grid" id="calendar-grid"></div>
-    <div id="calendar-events"></div>
-  </div>
-
-  <!-- 神仙页 -->
-  <div class="page" id="page-deity">
-    <input type="text" class="search-box" placeholder="搜索神仙名号、神职..." id="deity-search" oninput="filterDeities()">
-    <div class="filter-tags" id="deity-filters"></div>
-    <div id="deity-list"></div>
-  </div>
-
-  <!-- 术语页 -->
-  <div class="page" id="page-terms">
-    <input type="text" class="search-box" placeholder="搜索道教练语..." id="term-search" oninput="filterTerms()">
-    <div class="filter-tags" id="term-filters"></div>
-    <div id="term-list"></div>
-  </div>
-
-  <!-- 经典页 -->
-  <div class="page" id="page-classics">
-    <input type="text" class="search-box" placeholder="搜索经典..." id="classic-search" oninput="filterClassics()">
-    <div id="classic-list"></div>
-  </div>
-
-  <!-- 名胜页 -->
-  <div class="page" id="page-sites">
-    <input type="text" class="search-box" placeholder="搜索宫观名胜..." id="site-search" oninput="filterSites()">
-    <div id="site-list"></div>
-  </div>
-
-  <!-- 详细指南页 -->
-  <div class="page" id="page-detail">
-    <input type="text" class="search-box" placeholder="搜索日程..." id="detail-search" oninput="filterDetails()">
-    <div class="filter-tags" id="detail-filters"></div>
-    <div id="detail-list"></div>
-  </div>
-
-</div>
-
-<!-- 底部导航 -->
-<div class="nav-bar">
-  <div class="nav-item active" onclick="switchPage('home')">
-    <div class="icon">🏠</div><div class="label">首页</div>
-  </div>
-  <div class="nav-item" onclick="switchPage('calendar')">
-    <div class="icon">📅</div><div class="label">日历</div>
-  </div>
-  <div class="nav-item" onclick="switchPage('deity')">
-    <div class="icon">🏛️</div><div class="label">神仙</div>
-  </div>
-  <div class="nav-item" onclick="switchPage('terms')">
-    <div class="icon">📖</div><div class="label">术语</div>
-  </div>
-  <div class="nav-item" onclick="switchPage('detail')">
-    <div class="icon">📋</div><div class="label">详情</div>
-  </div>
-</div>
-
-<!-- 详情弹窗 -->
-<div class="modal-overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal" id="modal-content">
-    <button class="close-btn" onclick="closeModal()">✕</button>
-    <div id="modal-body"></div>
-  </div>
-</div>
-
-<script src="js/data.js"></script>
-<script src="js/app.js"></script>
+<script src="data.js"></script>
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').catch(function() {});
+/* ============ DATA ADAPT (from v2 data.js) ============ */
+function stripMd(md){
+  if(!md)return '';
+  var t=md;
+  // extract english line
+  var en='';
+  var em=t.match(/\*\*English:\s*([^*]+)\*\*/);
+  if(em)en=em[1].trim();
+  // remove english block & markdown symbols
+  t=t.replace(/\*\*English:[^*]*\*\*/g,'');
+  t=t.replace(/^#+\s*/gm,'').replace(/\*\*/g,'').replace(/^>\s*/gm,'');
+  t=t.replace(/^---+$/gm,'').replace(/^[-*]\s*/gm,'');
+  t=t.replace(/`/g,'');
+  // take first meaningful chinese paragraph
+  var lines=t.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  var desc='';
+  for(var i=0;i<lines.length;i++){
+    var l=lines[i];
+    if(l.length>15 && !/^English/.test(l) && !/^【.*】$/.test(l)){desc=l;break;}
+  }
+  return {en:en,desc:desc};
+}
+var JM=(window.JM_DATA||{});
+var RAW_D=JM.DEITIES||(typeof DEITIES!=='undefined'?DEITIES:[]);
+var RAW_E=JM.EVENTS||(typeof EVENTS!=='undefined'?EVENTS:[]);
+var GODS=RAW_D.map(function(d){
+  return {name:d.name,en:d.name_en||'',cat:d.category||'',img:d.image||'',
+    role:d.duty||d.title||'',desc:d.intro_zh||'',en_intro:d.intro_en||'',
+    birthday:d.birthday||'',imgSrc:d.image_source||''};
+});
+var CAL_EVENTS=RAW_E.map(function(e){
+  var info=stripMd(e.description||'');
+  var m=(e.summary||'').match(/【(.+?)】(.*)/);
+  var title=m?(m[1]+' '+(m[2]||'').trim()):(e.summary||'');
+  var type='Observance';
+  if(/戊/.test(title))type='Taboo Day';
+  else if(/圣诞|聖誕/.test(title))type='Feast Day';
+  else if(/节|節/.test(title))type='Festival';
+  else if(/庚申/.test(title))type='Geng Shen';
+  else if(/道场|道場|纪念|紀念/.test(title))type='Anniversary';
+  return {date:e.date,title:title,en:info.en,desc:info.desc,type:type,raw:e.description||''};
+});
+var SITE_LIST=[];
+
+/* ============ NAV ============ */
+function goPage(p){
+  document.querySelectorAll('.page').forEach(function(el){el.classList.remove('active');});
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(el){
+    el.classList.toggle('active',el.dataset.page===p);
+  });
+  document.querySelectorAll('.qn-item').forEach(function(el,i){
+    var map=['home','calendar','deities','classics','divination'];
+    el.classList.toggle('active',map[i]===p);
+  });
+  document.querySelector('.pages').scrollTop=0;
+  document.querySelectorAll('.page').forEach(function(el){el.scrollTop=0;});
+}
+
+/* ============ LUNAR CALENDAR & GANZHI ============ */
+var LUNAR_INFO=[
+0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+0x06566,0x0d4a0,0x0ea50,0x16a95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,
+0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0,
+0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,
+0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,
+0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,
+0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,
+0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0,
+0x14b63,0x09370,0x049f8,0x04970,0x064b0,0x168a6,0x0ea50,0x06b20,0x1a6c4,0x0aae0,
+0x092e0,0x0d2e3,0x0c960,0x0d557,0x0d4a0,0x0da50,0x05d55,0x056a0,0x0a6d0,0x055d4,
+0x052d0,0x0a9b8,0x0a950,0x0b4a0,0x0b6a6,0x0ad50,0x055a0,0x0aba4,0x0a5b0,0x052b0,
+0x0b273,0x06930,0x07337,0x06aa0,0x0ad50,0x14b55,0x04b60,0x0a570,0x054e4,0x0d260,
+0x0e968,0x0d520,0x0daa0,0x16aa6,0x056d0,0x04ae0,0x0a9d4,0x0a4d0,0x0d150,0x0f252,
+0x0d520];
+var GAN=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+var ZHI=['子','醜','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+var GAN_EN=['Jia','Yi','Bing','Ding','Wu','Ji','Geng','Xin','Ren','Gui'];
+var ZHI_EN=['Zi','Chou','Yin','Mao','Chen','Si','Wu','Wei','Shen','You','Xu','Hai'];
+var ANIMAL=['鼠','牛','虎','兔','龍','蛇','馬','羊','猴','雞','狗','豬'];
+var ANIMAL_EN=['Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Monkey','Rooster','Dog','Pig'];
+var LM=['正月','二月','三月','四月','五月','六月','七月','八月','九月','十月','冬月','臘月'];
+var LD1=['初一','初二','初三','初四','初五','初六','初七','初八','初九','初十'];
+var WEEK_EN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var MON_EN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function lLeapMonth(y){return LUNAR_INFO[y-1900]&0xf;}
+function lLeapDays(y){var m=lLeapMonth(y);return m?((LUNAR_INFO[y-1900]&0x10000)?30:29):0;}
+function lMonthDays(y,m){return (LUNAR_INFO[y-1900]&(0x10000>>m))?30:29;}
+function lYearDays(y){var s=348,i=0x8000;while(i>0x8){if(LUNAR_INFO[y-1900]&i)s++;i>>=1;}return s+lLeapDays(y);}
+function solar2lunar(y,m,d){
+  var base=Date.UTC(1900,0,31), offset=Math.floor((Date.UTC(y,m,d)-base)/86400000);
+  var ly=1900;
+  while(ly<2101){var yd=lYearDays(ly);if(offset<yd)break;offset-=yd;ly++;}
+  var leap=lLeapMonth(ly),isLeap=false,lm=1,ld;
+  while(lm<=12){
+    var md=lMonthDays(ly,lm);
+    if(offset<md)break;offset-=md;
+    if(leap===lm){var ldd=lLeapDays(ly);if(offset<ldd){isLeap=true;break;}offset-=ldd;}
+    lm++;
+  }
+  ld=offset+1;
+  return {y:ly,m:lm,d:ld,isLeap:isLeap};
+}
+function lunarDayName(d){
+  if(d===10)return '初十';
+  if(d===20)return '二十';
+  if(d===30)return '三十';
+  var p=['初','十','廿','三'][Math.floor(d/10)];
+  return p+['一','二','三','四','五','六','七','八','九','十'][d%10-1];
+}
+function dayGanzhi(y,m,d){
+  var anchor=Date.UTC(2026,0,1), diff=Math.floor((Date.UTC(y,m,d)-anchor)/86400000);
+  var idx=((11+diff)%60+60)%60; /* 2026-01-01 = 乙亥 (index 11), verified */
+  return {gz:GAN[idx%10]+ZHI[idx%12], en:GAN_EN[idx%10]+' '+ZHI_EN[idx%12], idx:idx, zhi:ZHI[idx%12]};
+}
+function yearGanzhi(ly){var i=((ly-4)%60+60)%60;return {gz:GAN[i%10]+ZHI[i%12],en:GAN_EN[i%10]+' '+ZHI_EN[i%12],animal:ANIMAL[i%12],animalEn:ANIMAL_EN[i%12]};}
+function monthGanzhi(ly,lm){
+  var yg=(ly-4)%10, yinGan=[2,4,6,8,0][yg%5]; /* 五虎遁 正月寅月天干 */
+  var gi=(yinGan+(lm-1))%10, zi=(lm+1)%12;
+  return GAN[gi]+ZHI[zi];
+}
+/* render today */
+var now=new Date();
+var TY=now.getFullYear(),TM=now.getMonth(),TD=now.getDate();
+var L=solar2lunar(TY,TM,TD);
+var DG=dayGanzhi(TY,TM,TD), YG=yearGanzhi(L.y), MG=monthGanzhi(L.y,L.m);
+var TODAY_STR=TY+'-'+String(TM+1).padStart(2,'0')+'-'+String(TD).padStart(2,'0');
+document.getElementById('heroDateEn').textContent=MON_EN[TM]+' '+TD+', '+TY;
+document.getElementById('heroChar').textContent=DG.zhi;
+document.getElementById('heroLunar').textContent='農曆 · '+(L.isLeap?'閏':'')+LM[L.m-1]+lunarDayName(L.d);
+document.getElementById('heroGanzhi').textContent=DG.gz+'日 · '+DG.en;
+document.getElementById('heroTime').textContent=YG.en.toUpperCase()+' YEAR · THE '+YG.animalEn.toUpperCase();
+
+/* today events */
+(function(){
+  var box=document.getElementById('todayEvents');
+  var today=CAL_EVENTS.filter(function(e){return e.date===TODAY_STR;});
+  if(!today.length){
+    box.innerHTML='<div class="empty-state"><div class="empty-char">靜</div><div class="empty-txt">今日無特殊道門日程</div><div class="empty-en">A Day of Stillness</div></div>';
+  }else{
+    box.innerHTML=today.map(evCard).join('');
+  }
+})();
+var MON_ABBR=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function evCard(e){
+  var pp=e.date.split('-');
+  return '<div class="event-card"><div class="event-day"><div class="d">'+parseInt(pp[2])+'</div><div class="m">'+MON_ABBR[parseInt(pp[1])-1]+'</div></div>'+
+    '<div class="event-body"><div class="event-title">'+e.title+'</div>'+
+    '<div class="event-en">'+(e.en||'')+'</div>'+
+    '<div class="event-desc">'+(e.desc||e.note||'')+'</div>'+
+    '<span class="event-tag">'+(e.type||'Observance')+'</span></div></div>';
+}
+
+/* ============ CALENDAR ============ */
+var calYear=TY,calMonth=TM;
+function renderCalendar(){
+  var first=new Date(calYear,calMonth,1).getDay();
+  var days=new Date(calYear,calMonth+1,0).getDate();
+  var eventDays={};
+  CAL_EVENTS.forEach(function(e){
+    var parts=e.date.split('-');
+    if(parseInt(parts[0])===calYear&&parseInt(parts[1])===calMonth+1){
+      eventDays[parseInt(parts[2])]=e;
+    }
+  });
+  var html='';
+  for(var i=0;i<first;i++)html+='<div class="cal-cell empty"></div>';
+  for(var d=1;d<=days;d++){
+    var cls='cal-cell';
+    if(eventDays[d])cls+=' has-event';
+    if(calYear===TY&&calMonth===TM&&d===TD)cls+=' today';
+    html+='<div class="'+cls+'" onclick="selectDay('+d+')">'+d+'</div>';
+  }
+  document.getElementById('calGrid').innerHTML=html;
+  document.getElementById('calYM').textContent=calYear+'年 '+(calMonth+1)+'月';
+  renderCalDetail(null);
+}
+function changeMonth(n){
+  calMonth+=n;
+  if(calMonth<0){calMonth=11;calYear--;}
+  if(calMonth>11){calMonth=0;calYear++;}
+  renderCalendar();
+}
+function selectDay(d){
+  document.querySelectorAll('.cal-cell').forEach(function(c){c.classList.remove('selected');});
+  if(event.target.classList.contains('cal-cell'))event.target.classList.add('selected');
+  renderCalDetail(d);
+}
+function renderCalDetail(d){
+  var box=document.getElementById('calDetail');
+  var list=CAL_EVENTS.filter(function(e){
+    var p=e.date.split('-');
+    if(parseInt(p[0])!==calYear||parseInt(p[1])!==calMonth+1)return false;
+    return d?parseInt(p[2])===d:true;
+  });
+  if(!list.length){
+    box.innerHTML='<div class="empty-state"><div class="empty-char">和</div><div class="empty-txt">'+(d?'此日無特殊節日':'本月節日見日曆標記')+'</div><div class="empty-en">No Observance</div></div>';
+    return;
+  }
+  box.innerHTML=list.map(function(e){
+    return '<div class="detail-card"><div class="dc-type">'+(e.type||'Observance')+'</div>'+
+      '<div class="dc-title">'+e.title+'</div><div class="dc-en">'+(e.en||'')+'</div>'+
+      (e.desc?'<div class="dc-sec"><div class="dc-sec-h">簡介 Introduction</div><p>'+e.desc+'</p></div>':'')+
+      (e.ritual?'<div class="dc-sec"><div class="dc-sec-h">道場儀軌 Ritual</div><p>'+e.ritual+'</p></div>':'')+
+      (e.taboo?'<div class="dc-sec"><div class="dc-sec-h">禁忌 Taboo</div><p>'+e.taboo+'</p></div>':'')+
+      '</div>';
+  }).join('');
+}
+
+/* ============ DEITIES ============ */
+var deityCats=['全部'];
+(function(){
+  var seen={};
+  GODS.forEach(function(d){if(d.cat&&!seen[d.cat]){seen[d.cat]=1;deityCats.push(d.cat);}});
+})();
+var activeCat='全部';
+function renderDeityTags(){
+  document.getElementById('deityTags').innerHTML=deityCats.map(function(c){
+    return '<button class="f-tag'+(c===activeCat?' active':'')+'" onclick="filterDeity(\''+c+'\')">'+c+'</button>';
+  }).join('');
+}
+function filterDeity(c){activeCat=c;renderDeityTags();renderDeities();}
+function renderDeities(){
+  var q=(document.getElementById('deitySearch').value||'').trim();
+  var list=GODS.filter(function(d){
+    if(activeCat!=='全部'&&d.cat!==activeCat&&!(d.cats&&d.cats.indexOf(activeCat)>=0))return false;
+    if(q&&d.name.indexOf(q)<0&&(d.role||'').indexOf(q)<0&&(d.en||'').toLowerCase().indexOf(q.toLowerCase())<0)return false;
+    return true;
+  });
+  document.getElementById('deityList').innerHTML=list.map(function(d,i){
+    return '<div class="deity-card" onclick="openDeity('+GODS.indexOf(d)+')">'+
+      '<img class="deity-img" src="'+(d.img||'')+'" onerror="this.style.visibility=\'hidden\'">'+
+      '<div class="deity-info"><div class="deity-name">'+d.name+'</div>'+
+      '<div class="deity-en">'+(d.en||'')+'</div>'+
+      '<div class="deity-role">'+(d.role||'')+'</div></div>'+
+      '<svg class="deity-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18l6-6-6-6"/></svg>'+
+      '</div>';
+  }).join('')||'<div class="empty-state"><div class="empty-char">尋</div><div class="empty-txt">未尋得此仙真</div></div>';
+}
+function openDeity(i){
+  var d=GODS[i];
+  document.getElementById('modalContent').innerHTML=
+    '<img class="modal-deity-img" src="'+(d.img||'')+'" onerror="this.style.display=\'none\'">'+
+    (d.imgSrc?'<div style="font-size:10.5px;color:var(--muted-light);margin-top:7px;letter-spacing:1px;font-family:var(--en-sans);">圖像來源 Source · '+d.imgSrc+'</div>':'')+
+    '<div class="modal-deity-name">'+d.name+'</div>'+
+    '<div class="modal-deity-en">'+(d.en||'')+'</div>'+
+    '<div style="margin-top:10px;"><span class="modal-deity-role">'+(d.role||'')+'</span></div>'+
+    (d.birthday?'<div class="modal-sec"><h4>聖誕 Feast Day</h4><p>'+d.birthday+'</p></div>':'')+
+    '<div class="modal-sec"><h4>仙真寶誌 Introduction</h4><p>'+(d.desc||'')+'</p></div>'+
+    (d.en_intro?'<div class="modal-sec"><h4>English</h4><p style="font-family:var(--en-serif);font-style:italic;font-size:14px;line-height:1.9;">'+d.en_intro+'</p></div>':'');
+  document.getElementById('deityModal').classList.add('open');
+}
+function closeDeity(){document.getElementById('deityModal').classList.remove('open');}
+
+/* ============ CLASSICS READER ============ */
+var READERS=[
+  {t:'淨明早晚課誦本',en:'Jingming Daily Liturgy · Morning & Evening Rites',
+   body:[
+     {c:'早課軌儀 · Morning Rite'},
+     {p:'宮觀早課，於卯時（清晨五至七時）舉行，其序有六：一、灑淨壇場，沐手焚香，燃清香三炷，行三禮拜；二、誦八大神咒（淨心、淨口、淨身、安土地、淨天地、祝香、金光、玄蘊），以清淨身、口、意三業；三、誦《太上老君說常清靜經》《高上玉皇心印妙經》諸品；四、誦諸真寶誥，淨明門下尤重《許祖寶誥》；五、禮拜、懺悔、發四弘誓願；六、回向，禮退。'},
+     {c:'晚課軌儀 · Evening Rite'},
+     {p:'晚課於酉戌之時（日落之後）舉行。其序：一、燃香禮拜；二、誦《太上洞玄靈寶救苦妙經》《元始天尊說生天得道真經》《太上道君說解冤拔罪妙經》等濟度諸經；三、誦諸真寶誥、報恩寶誥；四、宮觀於朔望、節日設施食一壇（蒙山施食、鐵罐斛食），以濟幽冥；五、禮拜、回向、安奉香火，一日功課圓滿。在家居士，可於清靜處早晚焚香，持咒誦經，存心虔敬，不拘儀節之繁簡。'},
+     {c:'淨心神咒'},
+     {verse:'太上台星，應變無停。<br>驅邪縛魅，保命護身。<br>智慧明淨，心神安寧。<br>三魂永久，魄無喪傾。'},
+     {c:'淨口神咒'},
+     {verse:'丹朱口神，吐穢除氛。<br>舌神正倫，通命養神。<br>羅千齒神，卻邪衛真。<br>喉神虎賁，炁神引津。<br>心神丹元，令我通真。<br>思神煉液，道炁常存。'},
+     {c:'淨身神咒'},
+     {verse:'靈寶天尊，安慰身形。<br>弟子魂魄，五臟玄冥。<br>青龍白虎，隊仗紛紜；<br>朱雀玄武，侍衛我真。'},
+     {c:'安土地神咒'},
+     {verse:'元始安鎮，普告萬靈。<br>嶽瀆真官，土地祗靈。<br>左社右稷，不得妄驚。<br>回向正道，內外澄清。<br>各安方位，備守壇庭。<br>太上有命，搜捕邪精。<br>護法神王，保衛誦經。<br>皈依大道，元亨利貞。'},
+     {c:'淨天地神咒'},
+     {verse:'天地自然，穢炁分散。<br>洞中玄虛，晃朗太元。<br>八方威神，使我自然。<br>靈寶符命，普告九天；<br>乾羅答那，洞罡太玄；<br>斬妖縛邪，度人萬千。<br>中山神咒，元始玉文，<br>持誦一遍，卻病延年；<br>按行五嶽，八海知聞；<br>魔王束首，侍衛我軒；<br>凶穢消散，道炁常存。'},
+     {c:'祝香神咒'},
+     {verse:'道由心學，心假香傳。<br>香爇玉爐，心存帝前。<br>真靈下盼，仙旆臨軒。<br>令臣關告，逕達九天。'},
+     {c:'金光神咒'},
+     {verse:'天地玄宗，萬炁本根。<br>廣修億劫，證吾神通。<br>三界內外，惟道獨尊。<br>體有金光，覆映吾身。<br>視之不見，聽之不聞。<br>包羅天地，養育群生。<br>受持萬遍，身有光明。<br>三界侍衛，五帝司迎。<br>萬神朝禮，役使雷霆。<br>鬼妖喪膽，精怪藏形。<br>內有霹靂，雷神隱名。<br>洞慧交徹，五炁騰騰。<br>金光速現，覆護真人。'},
+     {c:'玄蘊咒'},
+     {verse:'雲篆太虛，浩劫之初。<br>乍遐乍邇，或沉或浮。<br>五方徘徊，一丈之餘。<br>天真皇人，按筆乃書。<br>以演洞章，次書靈符。<br>元始下降，真文誕敷。<br>昭昭其有，冥冥其無。<br>沉痾能自痊，塵勞溺可扶。<br>幽冥將有賴，由是升仙都。'},
+     {c:'高上玉皇心印妙經'},
+     {verse:'上藥三品，神與氣精。恍恍惚惚，杳杳冥冥。<br>存無守有，頃刻而成。回風混合，百日功靈。<br>默朝上帝，一紀飛升。知者易悟，昧者難行。<br>履踐天光，呼吸育清。出玄入牝，若亡若存。<br>綿綿不絕，固蒂深根。人各有精，精合其神；<br>神合其氣，氣合其真。不得其真，皆是強名。<br>神能入石，神能飛形。入水不溺，入火不焚。<br>神依形生，精依氣盈。不凋不殘，松柏青青。<br>三品一理，妙不可聽。其聚則有，其散則零。<br>七竅相通，竅竅光明。聖日聖月，照耀金庭。<br>一得永得，自然身輕。太和充溢，骨散寒瓊。<br>得丹則神，不得則傾。丹在身中，非白非青。<br>誦持萬遍，妙理自明。'},
+     {c:'許祖寶誥（淨明普化天尊）'},
+     {p:'混元始祖，一炁分真。多劫之前，積行累功。殷勤苦志，經書精通。有大功德，及於生民。剪怪馘妖，功高九宸。拔宅飛升，上朝帝宸。覃恩廣布，罔不尊親。為眾仙之領袖，作九天之丈人。大悲大願，大聖大慈。普天匝地，救度眾生。祖師九州都仙太史高明大使雷霆泰省天樞伏魔上相神功妙濟真君，淨明普化天尊。'},
+     {p:'※ 以上寶誥、神咒依道門通行課誦本整理，各宮觀傳本或有詳略異同，當以本門師授為準。'}
+   ]},
+  {t:'太上老君說常清靜經',en:'Scripture of Clarity and Stillness',
+   body:[
+     {c:'開經偈',verse:'老君曰：大道無形，生育天地；大道無情，運行日月；大道無名，長養萬物。吾不知其名，強名曰道。'},
+     {p:'夫道者：有清有濁，有動有靜；天清地濁，天動地靜；男清女濁，男動女靜。降本流末，而生萬物。清者濁之源，動者靜之基。人能常清靜，天地悉皆歸。'},
+     {p:'夫人神好清，而心擾之；人心好靜，而慾牽之。常能遣其欲，而心自靜；澄其心，而神自清；自然六欲不生，三毒消滅。所以不能者，為心未澄，欲未遣也。'},
+     {p:'能遣之者：內觀其心，心無其心；外觀其形，形無其形；遠觀其物，物無其物；三者既悟，唯見於空。'},
+     {p:'觀空亦空，空無所空；所空既無，無無亦無；無無既無，湛然常寂。寂無所寂，欲豈能生？欲既不生，即是真靜。真常應物，真常得性；常應常靜，常清靜矣。'},
+     {p:'如此清靜，漸入真道；既入真道，名為得道。雖名得道，實無所得；為化眾生，名為得道。能悟之者，可傳聖道。'},
+     {p:'老君曰：上士無爭，下士好爭；上德不德，下德執德；執著之者，不名道德。眾生所以不得真道者，為有妄心；既有妄心，即驚其神；既驚其神，即著萬物；既著萬物，即生貪求；既生貪求，即是煩惱。'},
+     {p:'煩惱妄想，憂苦身心；便遭濁辱，流浪生死；常沉苦海，永失真道。真常之道，悟者自得；得悟道者，常清靜矣。'},
+     {c:'結經偈',verse:'仙人葛翁曰：吾得真道，曾誦此經萬遍。此經是天人所習，不傳下士。吾昔受之於東華帝君，東華帝君受之於金闕帝君，金闕帝君受之於西王母。西王母皆口口相傳，不記文字。吾今於世，書而錄之。上士悟之，升為天官；中士修之，南宮列仙；下士得之，在世長年。'}
+   ]},
+  {t:'道德經（選）',en:'Tao Te Ching · Selections',
+   body:[
+     {c:'第一章',verse:'道可道，非常道；名可名，非常名。無名天地之始，有名萬物之母。故常無欲以觀其妙，常有欲以觀其徼。此兩者同出而異名，同謂之玄。玄之又玄，眾妙之門。'},
+     {c:'第八章',verse:'上善若水。水善利萬物而不爭，處眾人之所惡，故幾於道。居善地，心善淵，與善仁，言善信，政善治，事善能，動善時。夫唯不爭，故無尤。'},
+     {c:'第十六章',verse:'致虛極，守靜篤。萬物並作，吾以觀復。夫物芸芸，各復歸其根。歸根曰靜，是謂復命。復命曰常，知常曰明。不知常，妄作凶。'},
+     {c:'第三十七章',verse:'道常無為而無不為。侯王若能守之，萬物將自化。化而欲作，吾將鎮之以無名之樸。無名之樸，夫亦將無欲。不欲以靜，天下將自定。'},
+     {c:'第四十二章',verse:'道生一，一生二，二生三，三生萬物。萬物負陰而抱陽，沖氣以為和。'},
+     {c:'第四十八章',verse:'為學日益，為道日損。損之又損，以至於無為。無為而無不為矣。取天下常以無事，及其有事，不足以取天下。'},
+     {c:'第七十八章',verse:'天下莫柔弱於水，而攻堅強者莫之能勝，以其無以易之。弱之勝強，柔之勝剛，天下莫不知，莫能行。'}
+   ]},
+  {t:'太上感應篇',en:'Treatise on Response and Retribution',
+   body:[
+     {p:'太上曰：禍福無門，惟人自召；善惡之報，如影隨形。是以天地有司過之神，依人所犯輕重，以奪人算。算減則貧耗，多逢憂患；人皆惡之，刑禍隨之，吉慶避之，惡星災之；算盡則死。'},
+     {p:'又有三台北斗神君，在人頭上，錄人罪惡，奪其紀算。又有三尸神，在人身中，每到庚申日，輒上詣天曹，言人罪過。月晦之日，灶神亦然。凡人有過，大則奪紀，小則奪算。其過大小，有數百事，欲求長生者，先須避之。'},
+     {p:'是道則進，非道則退。不履邪徑，不欺暗室；積德累功，慈心於物；忠孝友悌，正己化人；矜孤恤寡，敬老懷幼；昆蟲草木，猶不可傷。宜憫人之凶，樂人之善；濟人之急，救人之危。見人之得，如己之得；見人之失，如己之失。'},
+     {p:'不彰人短，不炫己長；遏惡揚善，推多取少；受辱不怨，受寵若驚；施恩不求報，與人不追悔。所謂善人，人皆敬之，天道佑之，福祿隨之，眾邪遠之，神靈衛之，所作必成，神仙可冀。'},
+     {p:'夫心起於善，善雖未為，而吉神已隨之；或心起於惡，惡雖未為，而凶神已隨之。其有曾行惡事，後自改悔，諸惡莫作，眾善奉行，久久必獲吉慶，所謂轉禍為福也。故吉人語善、視善、行善，一日有三善，三年天必降之福；凶人語惡、視惡、行惡，一日有三惡，三年天必降之禍。胡不勉而行之？'}
+   ]},
+  {t:'淨明忠孝全書（選）',en:'Complete Writings of Jingming · Selections',
+   body:[
+     {c:'淨明道法說',p:'淨明之道，以忠孝為本。忠者，忠於君、忠於國、忠於事、忠於心；孝者，孝於親、孝於祖、孝於天地。忠孝立，則人道盡；人道盡，而仙道可幾矣。'},
+     {p:'許真君曰：欲修仙道，先修人道。人道不虧，仙道自至。何謂人道？忠孝廉謹、寬裕容忍，是為垂世八寶。八寶完具，方寸淨明，則與道合真矣。'},
+     {p:'淨明者，無幽不燭曰淨，無物不照曰明。心鏡本明，為塵所翳；忠孝廉慎，所以拭塵；塵盡明復，是名淨明。'},
+     {c:'八寶垂訓',verse:'忠：不欺之謂忠，盡己之謂忠。<br>孝：敬親之謂孝，報本之謂孝。<br>廉：不貪之謂廉，守正之謂廉。<br>謹：慎獨之謂謹，持重之謂謹。<br>寬：容眾之謂寬，恕人之謂寬。<br>裕：厚施之謂裕，廣納之謂裕。<br>容：受諫之謂容，包羞之謂容。<br>忍：耐事之謂忍，養性之謂忍。'},
+     {p:'學道之士，先當收心。心為一身之主，萬法之宗。心正則邪不能入，心淨則欲不能污。日用之間，常令方寸虛明洞徹，如青天白日，無一點雲翳，方是淨明氣象。'}
+   ]}
+];
+function openReader(i){
+  var c=READERS[i];
+  document.getElementById('readerTitle').textContent=c.t;
+  document.getElementById('readerEn').textContent=c.en;
+  document.getElementById('readerBody').innerHTML=c.body.map(function(b){
+    if(b.c)return '<div class="chapter">'+b.c+'</div>';
+    if(b.verse)return '<p class="verse">'+b.verse+'</p>';
+    return '<p>'+b.p+'</p>';
+  }).join('');
+  document.getElementById('reader').classList.add('open');
+}
+function closeReader(){document.getElementById('reader').classList.remove('open');}
+
+/* sites */
+function renderSites(){
+  SITE_LIST=[
+    {name:'南昌西山萬壽宮',en:'Wanshou Palace, Xishan',loc:'江西 · 南昌新建區西山镇',tag:'淨明道祖庭',
+     desc:'淨明道祖庭，許遜真君修道飛升之地，江南著名道觀。始建於東晉太興元年（323年），初名許仙祠，南北朝改遊帷觀，宋真宗賜額玉隆宮，宋徽宗升為玉隆萬壽宮。宮前有許祖手植柏（相傳一千六百餘年）、鎖蛟井（傳許真君鎮鎖孽龍之處）。每年農曆正月二十八許祖聖誕、八月初一飛升日，廟會鼎盛。'},
+    {name:'李渡萬壽宮',en:'Wanshou Palace, Lidu',loc:'江西 · 南昌進賢縣李渡鎮',tag:'淨明道重要宮觀',
+     desc:'淨明道重要宮觀，江南著名萬壽宮之一，始建於宋代。李渡鎮為中國著名「白酒之鄉」（李渡酒千年酒鄉），萬壽宮臨撫河而建，既是當地道教文化中心，亦是明清江右商幫聚會祭祀之所，見證許祖信仰隨商路遠播。'},
+    {name:'龍虎山天師府',en:"Celestial Masters' Mansion",loc:'江西 · 鷹潭貴溪市上清鎮',tag:'正一道祖庭',
+     desc:'正一道祖庭，歷代張天師起居、祀神之所，號稱「南國無雙地，西江第一家」，又稱「相國仙府」。北宋崇寧四年（1105年）第三十代天師張繼先始建。漢末張道陵於龍虎山煉丹，丹成而龍虎現，山因得名。為正一派傳法授籙之聖地。'},
+    {name:'北京白雲觀',en:'White Cloud Temple',loc:'北京 · 西城區白雲觀街',tag:'全真道祖庭',
+     desc:'全真道祖庭、「全真第一叢林」，現為中國道教協會駐地。始建於唐開元二十九年（741年），原名天長觀。長春真人丘處機曾於此住持，觀內有丘祖殿，藏《道藏》珍本。春節白雲觀廟會為北京最盛廟會之一，「摸石猴」祈福習俗聞名遐邇。'},
+    {name:'蘇州玄妙觀',en:'Xuanmiao Temple, Suzhou',loc:'江蘇 · 蘇州姑蘇區觀前街',tag:'江南第一古觀',
+     desc:'正一道著名宮觀，「江南第一古觀」，蘇州道教中心。始建於西晉咸寧二年（276年），原名真慶道院。主殿三清殿為宋代木構，是江南現存最大的宋代木構建築之一；殿內有唐代吳道子畫、唐玄宗贊、顏真卿書的「三絕碑」，玄妙觀廟會亦為蘇州最盛。'},
+    {name:'武漢長春觀',en:'Changchun Temple, Wuhan',loc:'湖北 · 武漢武昌區',tag:'全真道著名宮觀',
+     desc:'全真道著名宮觀，武漢道教中心，素有「江南一大福地」之譽。因紀念長春真人丘處機而得名，是武漢現存規模最大、保存最完整的道教建築群，道樂經韻傳承有緒。'},
+    {name:'武當山',en:'Wudang Mountains',loc:'湖北 · 十堰丹江口',tag:'真武大帝道場',
+     desc:'真武大帝道場，武當派太極拳發源地。明永樂年間大建宮觀，三十三處建築群依山而建，金頂矗立絕頂，有「亙古無雙勝境，天下第一仙山」之譽。武當武術、道樂、科儀舉世聞名。'},
+    {name:'青城山',en:'Mount Qingcheng',loc:'四川 · 成都都江堰',tag:'天師道發源地',
+     desc:'天師道發源地之一，道教第五洞天。相傳東漢張道陵曾於此結茅傳道、創立天師道。全山林木青翠，群峰環抱，號稱「青城天下幽」。天師洞、上清宮、祖師殿掩映蒼翠之間。'},
+    {name:'茅山',en:'Maoshan Mountains',loc:'江蘇 · 鎮江句容',tag:'上清派宗壇',
+     desc:'上清派宗壇，三茅真君修道之地。南朝陶弘景於此開茅山宗，主張三教調和、佛道雙修。九霄萬福宮雄踞大茅峰，列為道教「第一福地、第八洞天」，靈符、科儀、醫道並傳。'},
+    {name:'閤皂山',en:'Mount Gezao',loc:'江西 · 宜春樟樹',tag:'靈寶派祖山',
+     desc:'靈寶派祖山，與龍虎山、茅山並稱「道教三大符籙名山」，道經第三十六福地。相傳葛玄、葛洪祖孫於此煉丹製藥，開道教醫藥一脈。山中崇真宮、鳴水橋古意蒼然，樟樹幫藥都文化源出於此。'}
+  ];
+  document.getElementById('classicSites').innerHTML=SITE_LIST.map(function(s){
+    return '<div class="site-card"><div class="site-body">'+
+      '<div class="site-tag">'+s.tag+'</div>'+
+      '<div class="site-name">'+s.name+'</div><div class="site-en">'+s.en+'</div>'+
+      '<div class="site-loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-6.3-7-11a7 7 0 1114 0c0 4.7-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>'+s.loc+'</div>'+
+      '<div class="site-desc">'+s.desc+'</div></div></div>';
+  }).join('');
+}
+function switchClassicTab(btn,tab){
+  document.querySelectorAll('.c-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('classicJing').style.display=tab==='jing'?'block':'none';
+  document.getElementById('classicSites').style.display=tab==='sites'?'block':'none';
+  document.getElementById('classicYi').style.display=tab==='yi'?'block':'none';
+}
+
+/* ============ RITES 威儀 ============ */
+var RITES=[
+ {t:'拱手問訊',en:'The Hand Salute',
+  steps:['左手抱右手，以善掩惡，拇指自然相扣，雙手虛抱於胸前','立身中正，微躬身、低眉，以示恭敬','道人相見、問訊、聽經前後皆可行之，立而不跪'],
+  note:'又稱「抱拳禮」，乃道門最常用之常禮。'},
+ {t:'上香獻供',en:'Offering Incense',
+  steps:['取清香三炷，敬三清，亦象徵道、經、師三寶','以火燃香，切不可用口吹滅，輕搖令熄','雙手捧香，左手在外、右手在內，舉至齊眉，默禱所願','先插中間（玉清·道），次左（上清·經），後右（太清·師），務必插正插直','退後一步，行三拜禮'],
+  note:'香不過三，心香一瓣，貴在虔誠，忌一把亂插。'},
+ {t:'三拜九叩',en:'Three Bows · Nine Prostrations',
+  steps:['於拜墊前拱手肅立，存想神明在前','躬身屈膝，跪於墊上，雙手按墊、掌心向上','叩首至手，一拜之內三叩其首','起身拱手，復拜如初；如是三番，共三拜九叩','簡禮可止於三叩首，至誠即可'],
+  note:'聖誕、朔望、祈福、謝恩時行大禮。'},
+ {t:'進殿威儀',en:'Entering the Shrine Hall',
+  steps:['宜由側門而入，不踏中門；門檻當跨而過，切勿踩踏','男先邁左足、女先邁右足（隨俗從宜即可）','殿內低聲斂氣，不高聲談笑、不妄指神像','不背對聖像，不擅動法器、供品與籤筒','禮拜自主殿始，依神階而行；「戊不朝真」，明戊日不燒香、不朝真'],
+  note:''},
+ {t:'五供齋戒',en:'Offerings & Purification',
+  steps:['五獻：香、花、燈、水、果，務必清淨新潔','供果宜用單數，忌葷腥、穢物及不潔之手','誦經禮拜前沐手淨口，可誦淨心、淨口、淨身神咒','朔望、聖誕宜齋戒、沐浴、更衣，存神靜慮'],
+  note:''},
+ {t:'稱謂問訊',en:'Forms of Address',
+  steps:['對道士尊稱「師父」或「某道長」，自稱「弟子」「信士」','相見問訊，可道「慈悲」或「福生無量天尊」','請益於師，當斂容側聽，不輕議科儀、不褻瀆神真'],
+  note:''}
+];
+function renderYi(){
+  document.getElementById('classicYi').innerHTML=RITES.map(function(r,i){
+    var no=String(i+1).padStart(2,'0');
+    return '<div class="yi-card"><div class="yi-head"><span class="yi-no">'+no+'</span>'+
+      '<div><div class="yi-title">'+r.t+'</div><div class="yi-en">'+r.en+'</div></div></div>'+
+      '<ol class="yi-steps">'+r.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol>'+
+      (r.note?'<div class="yi-note">'+r.note+'</div>':'')+'</div>';
+  }).join('');
+}
+
+/* ============ HEXAGRAMS ============ */
+var HEX=[
+{n:'乾為天',no:'第一卦',lines:[1,1,1,1,1,1],ci:'元亨利貞。',jie:'純陽之卦，剛健中正。天行健，君子以自強不息。問事得此，宜奮進有為，然剛則易折，當以柔濟之。'},
+{n:'坤為地',no:'第二卦',lines:[0,0,0,0,0,0],ci:'元亨，利牝馬之貞。',jie:'純陰之卦，厚德載物。地勢坤，君子以厚德載物。問事得此，宜順守包容，以柔克剛，不可先發。'},
+{n:'水雷屯',no:'第三卦',lines:[1,0,0,0,1,0],ci:'元亨利貞，勿用有攸往，利建侯。',jie:'萬事開頭難之象。草昧初開，艱難橫生，然亂中可建大功。宜守正待時，廣結善緣，不可躁進。'},
+{n:'山水蒙',no:'第四卦',lines:[0,1,0,0,0,1],ci:'亨。匪我求童蒙，童蒙求我。',jie:'蒙昧待啟之象。山下出泉，未知方向，須求師問學、啟蒙開智。誠心求教則亨，自以為是則困。'},
+{n:'水天需',no:'第五卦',lines:[1,1,1,0,1,0],ci:'有孚，光亨，貞吉，利涉大川。',jie:'需待時機之象。雲上於天，需而後雨。時機未至，當養精蓄銳、守誠待時，不可強求，久待必通。'},
+{n:'天水訟',no:'第六卦',lines:[0,1,0,1,1,1],ci:'有孚窒惕，中吉，終凶。利見大人。',jie:'爭訟不和之象。天與水違行，各執一端。爭訟之事，適可而止則吉，纏訟到底則凶。宜退讓和解，尋貴人調停。'},
+{n:'地水師',no:'第七卦',lines:[0,1,0,0,0,0],ci:'貞，丈人吉，無咎。',jie:'興師動眾之象。地中有水，聚眾而成師。凡事宜有老成持重之人統率，紀律嚴明，師出有名則吉。'},
+{n:'水地比',no:'第八卦',lines:[0,0,0,0,1,0],ci:'吉。原筮元永貞，無咎。不寧方來，後夫凶。',jie:'親比團結之象。水在地上，無間相親。宜依附賢明、精誠合作，及早歸附有成；猶豫觀望、後至者凶。'},
+{n:'風天小畜',no:'第九卦',lines:[1,1,1,1,0,1],ci:'亨。密雲不雨，自我西郊。',jie:'小有蓄積之象。密雲滿天而雨未降，時機將熟而未至。宜耐心積蓄、修文養德，不可圖大，以柔制剛。'},
+{n:'天澤履',no:'第十卦',lines:[1,1,0,1,1,1],ci:'履虎尾，不咥人，亨。',jie:'如履虎尾之象。危中求進，謹慎則可化險為夷。以禮自處、柔履剛危，雖臨險地而終得亨通。'},
+{n:'地天泰',no:'第十一卦',lines:[1,1,1,0,0,0],ci:'小往大來，吉亨。',jie:'通泰安寧之象。天地交而萬物通，上下交而其志同。諸事順遂，然泰極必否，當居安思危、持盈保泰。'},
+{n:'天地否',no:'第十二卦',lines:[0,0,0,1,1,1],ci:'否之匪人，不利君子貞，大往小來。',jie:'閉塞不通之象。天地不交，萬物不通。小人道長，君子道消。宜儉德辟難，守正待時，否極終將泰來。'},
+{n:'天火同人',no:'第十三卦',lines:[1,0,1,1,1,1],ci:'同人于野，亨。利涉大川，利君子貞。',jie:'和同於人之象。火性向上，與天同心。宜與人和同、開誠佈公、共濟大事。去私存公，則無所不利。'},
+{n:'火天大有',no:'第十四卦',lines:[1,1,1,1,0,1],ci:'元亨。',jie:'大有所獲之象。火在天上，無所不照。富有之大卦，然滿則易溢，唯謙順好禮、以德守富，方能長保。'},
+{n:'地山謙',no:'第十五卦',lines:[0,0,1,0,0,0],ci:'亨，君子有終。',jie:'謙虛受益之象。地中有山，卑以自牧。謙受益、滿招損，六十四卦唯此卦六爻皆吉。宜低調謙下，善始善終。'},
+{n:'雷地豫',no:'第十六卦',lines:[0,0,0,1,0,0],ci:'利建侯行師。',jie:'安樂預備之象。雷出地奮，順以動。宜順時而動、預為籌謀，可成大事；然不可沉溺安樂，樂極生悲。'},
+{n:'澤雷隨',no:'第十七卦',lines:[1,0,0,1,1,0],ci:'元亨利貞，無咎。',jie:'隨順時勢之象。澤中有雷，隨時作息。宜順應潮流、擇善而從、隨順因緣，不可固執己見，然須守正。'},
+{n:'山風蠱',no:'第十八卦',lines:[0,1,1,0,0,1],ci:'元亨，利涉大川。先甲三日，後甲三日。',jie:'積弊待治之象。山下有風，事久生蠱。百廢待興，正宜振衰起敝、革除積弊。改革須慎始慮終，方能撥亂反正。'},
+{n:'地澤臨',no:'第十九卦',lines:[1,1,0,0,0,0],ci:'元亨利貞。至于八月有凶。',jie:'臨下監事之象。澤上有地，臨深淵而慎。機運正盛，宜積極有為、親臨指導；然盛極將衰，須思患預防。'},
+{n:'風地觀',no:'第二十卦',lines:[0,0,0,0,1,1],ci:'盥而不薦，有孚顒若。',jie:'觀察審視之象。風行地上，無所不觀。宜靜觀其變、以身作則、以誠感人。察己察人，而後動則無失。'},
+{n:'火雷噬嗑',no:'第二十一卦',lines:[1,0,0,1,0,1],ci:'亨，利用獄。',jie:'咬合除障之象。頤中有物，齧而後合。諸事有梗阻，須果斷排除、明罰敕法，如齧硬物，雖艱必通。'},
+{n:'山火賁',no:'第二十二卦',lines:[1,0,1,0,0,1],ci:'亨。小利有攸往。',jie:'文飾修美之象。山下有火，文明以止。宜注重禮儀文采、修飾外表，然文勝其質則浮華，當以質樸為本。'},
+{n:'山地剝',no:'第二十三卦',lines:[0,0,0,0,0,1],ci:'不利有攸往。',jie:'剝落衰敗之象。山附於地，厚下安宅。陰盛陽衰，小人道長。此時不宜有所作為，當順時止觀、厚植根基，待陽復生。'},
+{n:'地雷復',no:'第二十四卦',lines:[1,0,0,0,0,0],ci:'亨。出入無疾，朋來無咎。反復其道，七日來復。',jie:'一陽來復之象。雷在地中，冬至陽生。剝極而復，否極泰來，新生之機已動。宜靜養待時、把握轉機，前途漸明。'},
+{n:'天雷無妄',no:'第二十五卦',lines:[1,0,0,1,1,1],ci:'元亨利貞。其匪正有眚，不利有攸往。',jie:'無妄自然之象。天下雷行，物與無妄。宜順應自然、不存非分之想、不妄作為。行正道則吉，懷妄念則災。'},
+{n:'山天大畜',no:'第二十六卦',lines:[1,1,1,0,0,1],ci:'利貞，不家食吉，利涉大川。',jie:'大有蓄積之象。天在山中，所畜至大。宜廣學多識、蓄德養才、厚積薄發。才德既充，可出而濟世，無往不利。'},
+{n:'山雷頤',no:'第二十七卦',lines:[1,0,0,0,0,1],ci:'貞吉。觀頤，自求口實。',jie:'頤養正道之象。山下有雷，君子以慎言語、節飲食。宜注重養身養德，自食其力，慎言節欲，正則吉。'},
+{n:'澤風大過',no:'第二十八卦',lines:[0,1,1,1,1,0],ci:'棟橈，利有攸往，亨。',jie:'陽剛過盛之象。棟樑彎曲，承擔過重。非常之時須行非常之事，宜果斷擔當、獨立不懼，然剛過易折，須以柔輔之。'},
+{n:'坎為水',no:'第二十九卦',lines:[0,1,0,0,1,0],ci:'習坎，有孚維心亨，行有尚。',jie:'重險陷溺之象。水洊至，習坎。險上加險，然水流不盈、行險而不失其信。處險之道，唯誠心守正、沉著應變，終可出险。'},
+{n:'離為火',no:'第三十卦',lines:[1,0,1,1,0,1],ci:'利貞，亨。畜牝牛吉。',jie:'光明附麗之象。明兩作離，大人以繼明照於四方。宜依附正道、文明以止、以柔順為守。光明之時，仍須謙柔乃吉。'},
+{n:'澤山咸',no:'第三十一卦',lines:[0,0,1,1,1,0],ci:'亨，利貞，取女吉。',jie:'交感相應之象。山上有澤，柔上感下。陰陽交感，萬物化生。問姻緣則吉，問合作則成。貴在真誠相感、虛心應物。'},
+{n:'雷風恆',no:'第三十二卦',lines:[0,1,1,1,0,0],ci:'亨，無咎，利貞，利有攸往。',jie:'恆久守常之象。雷風相與，恆久不已。宜立恆心、守常道，久於其道而天下化成。然恆非守舊，當與時偕行。'},
+{n:'天山遯',no:'第三十三卦',lines:[0,0,1,1,1,1],ci:'亨，小利貞。',jie:'退避隱遁之象。天下有山，遠小人而不惡。小人道長之時，君子宜及時退避、明哲保身，非消極，乃待時而動。'},
+{n:'雷天大壯',no:'第三十四卦',lines:[1,1,1,1,0,0],ci:'利貞。',jie:'剛強壯盛之象。雷在天上，大聲鏜嗒。氣勢正盛，然壯極易暴，宜守正用柔、不可恃強妄動。強而不暴，方為真壯。'},
+{n:'火地晉',no:'第三十五卦',lines:[0,0,0,1,0,1],ci:'康侯用錫馬蕃庶，晝日三接。',jie:'晉升進益之象。明出地上，順而麗乎大明。如日東升，前途光明，宜積極上進、依附明主，柔進而上行則受賞。'},
+{n:'地火明夷',no:'第三十六卦',lines:[1,0,1,0,0,0],ci:'利艱貞。',jie:'光明受傷之象。明入地中，外晦內明。君子遭時昏暗，當韜光養晦、內文明而外柔順，守正不移，艱難中自存。'},
+{n:'風火家人',no:'第三十七卦',lines:[1,0,1,0,1,1],ci:'利女貞。',jie:'家道齊整之象。風自火出，自家而及國。宜正家道、明倫理、各正其位。家齊而後國治，言行當慎，防微杜漸。'},
+{n:'火澤睽',no:'第三十八卦',lines:[0,1,1,1,0,1],ci:'小事吉。',jie:'乖違背離之象。火性炎上、澤性潤下，二女同居其志不同。意見不合之時，大事難成，宜以同為異、求同存異，小事可成。'},
+{n:'水山蹇',no:'第三十九卦',lines:[0,0,1,0,1,0],ci:'利西南，不利東北。利見大人，貞吉。',jie:'行路艱難之象。山上有水，蹇難而行。前路艱險，不宜冒進，宜反身修德、結伴求助、尋貴人提攜，守正待援則吉。'},
+{n:'雷水解',no:'第四十卦',lines:[0,1,0,1,0,0],ci:'利西南。無所往，其來復吉。有攸往，夙吉。',jie:'患難消解之象。雷雨作而百果草木皆甲坼。困難將解、鬱結得舒，宜抓緊時機、果斷行動，赦過宥罪，早動則吉。'},
+{n:'山澤損',no:'第四十一卦',lines:[1,1,0,0,0,1],ci:'有孚，元吉，無咎，可貞，利有攸往。',jie:'減損下上之象。山下有澤，損下益上。有所捨才有所得，宜損己助人、克己奉公。損而有誠，雖損終益，捨得之間見智慧。'},
+{n:'風雷益',no:'第四十二卦',lines:[0,0,1,1,1,0],ci:'利有攸往，利涉大川。',jie:'增益興利之象。風雷相益，日進無疆。損上益下，民悅無疆。正是大有作為之時，宜見善則遷、有過則改、積極進取。'},
+{n:'澤天夬',no:'第四十三卦',lines:[1,1,1,1,1,0],ci:'揚于王庭，孚號有厲。',jie:'決斷清除之象。澤上於天，決而和。五陽決一陰，正氣決邪佞。宜果斷決斷、光明正大除去小人，然須戒懼，不可魯莽。'},
+{n:'天風姤',no:'第四十四卦',lines:[0,1,1,1,1,1],ci:'女壯，勿用取女。',jie:'不期而遇之象。天下有風，姤。陰始生而漸長，小人之機初萌。宜提高警覺、防微杜漸，對突如其來的因緣誘惑當審慎。'},
+{n:'澤地萃',no:'第四十五卦',lines:[0,0,0,1,1,0],ci:'亨。王假有廟，利見大人，亨，利貞。',jie:'聚集匯合之象。澤上於地，萃。萬物萃聚，人心歸向。宜聚集人才、共成大事，祭祀以祈福。然聚易生亂，須有德者領袖。'},
+{n:'地風升',no:'第四十六卦',lines:[0,1,1,0,0,0],ci:'元亨，用見大人，勿恤，南征吉。',jie:'上升進取之象。地中生木，升。積小以高大，循序而進，前程遠大。宜順時而進、拜謁貴人、積德累善，不必憂慮，前往則吉。'},
+{n:'澤水困',no:'第四十七卦',lines:[0,1,0,1,1,0],ci:'亨，貞，大人吉，無咎。有言不信。',jie:'困厄窮迫之象。澤無水困，君子以致命遂志。身處困境，有言難伸，當守志不移、修身俟命。大人處困，反而進德，終吉。'},
+{n:'水風井',no:'第四十八卦',lines:[0,1,1,0,1,0],ci:'改邑不改井，無喪無得，往來井井。',jie:'井養不窮之象。木上有水，井。井德恆常，養人無盡。宜修養自身、惠澤他人、守恆常之道。井淘則水清，人修則德明。'},
+{n:'澤火革',no:'第四十九卦',lines:[1,0,1,1,1,0],ci:'己日乃孚，元亨利貞，悔亡。',jie:'變革除舊之象。澤中有火，革。水火相息，乃生變革。時機成熟（己日）則順天應人、革故鼎新。改革須取信於眾，名正言順。'},
+{n:'火風鼎',no:'第五十卦',lines:[0,1,1,1,0,1],ci:'元吉，亨。',jie:'鼎新取新之象。木上有火，鼎。革故之後當鼎新，鼎立三足，穩重調和。宜選賢任能、凝聚人心、開創新局，大吉。'},
+{n:'震為雷',no:'第五十一卦',lines:[1,0,0,1,0,0],ci:'亨。震來虩虩，笑言啞啞。',jie:'震動警醒之象。洊雷聲震，君子以恐懼修省。突生變故，初則驚懼，若能臨危不亂、反躬修省，終歸安寧，笑言如常。'},
+{n:'艮為山',no:'第五十二卦',lines:[0,0,1,0,0,1],ci:'艮其背，不獲其身；行其庭，不見其人，無咎。',jie:'抑止靜定之象。兼山艮，君子以思不出其位。當止則止，當行則行。宜靜心止欲、安分守己、不為外物所動，知止而後有定。'},
+{n:'風山漸',no:'第五十三卦',lines:[0,0,1,0,1,1],ci:'女歸吉，利貞。',jie:'循序漸進之象。山上有木，漸。凡事不可急於求成，如女子出嫁須依禮循序。腳踏實地、循序而進，功到自然成，吉。'},
+{n:'雷澤歸妹',no:'第五十四卦',lines:[1,1,0,0,0,1],ci:'征凶，無攸利。',jie:'女子歸嫁之象。雷動澤盈，少女從長男。名分不正、時位不當，躁進則凶。凡事須名正言順、謹守本分，不可苟且。'},
+{n:'雷火豐',no:'第五十五卦',lines:[1,0,1,1,0,0],ci:'亨，王假之，勿憂，宜日中。',jie:'豐盛盛大之象。雷電皆至，豐。日中則昃，月盈則食。盛極必衰，當如日中天之時積極有為，更須守中保盛，居安思危。'},
+{n:'火山旅',no:'第五十六卦',lines:[0,0,1,1,0,1],ci:'小亨，旅貞吉。',jie:'旅行羈旅之象。山上有火，旅。人生如旅，居無定所。在外宜謹慎低調、依賴賢明、隨遇而安，小事可成，守正則吉。'},
+{n:'巽為風',no:'第五十七卦',lines:[0,1,1,0,1,1],ci:'小亨，利有攸往，利見大人。',jie:'順從深入之象。隨風巽，君子以申命行事。風性無孔不入，宜柔順謙下、循序漸進、反復叮嚀以成事，依附貴人則利。'},
+{n:'兌為澤',no:'第五十八卦',lines:[1,1,0,1,1,0],ci:'亨，利貞。',jie:'喜悅相悅之象。麗澤兌，君子以朋友講習。兩澤相連，互滋互潤。宜和顏悅色、以悅使人、朋友切磋，然悅之以正，戒邪諂。'},
+{n:'風水渙',no:'第五十九卦',lines:[0,1,0,0,1,1],ci:'亨。王假有廟，利涉大川，利貞。',jie:'渙散凝聚之象。風行水上，渙。人心渙散之時，當以祭祀、誠信凝聚之。渙而能聚，可涉大難，宜疏通化解、散財聚眾。'},
+{n:'水澤節',no:'第六十卦',lines:[1,1,0,1,0,0],ci:'亨。苦節不可貞。',jie:'節制有度之象。澤上有水，節。凡事須有節度，節制用度、言行有度則亨。然過度苦節、矯枉過正則難以長久，貴在中正。'},
+{n:'風澤中孚',no:'第六十一卦',lines:[1,1,0,0,1,1],ci:'豚魚吉，利涉大川，利貞。',jie:'中心誠信之象。澤上有風，中孚。誠信感物，雖豚魚之微亦可感格。宜以誠待人、忠信守諾，精誠所至金石為開，無往不利。'},
+{n:'雷山小過',no:'第六十二卦',lines:[0,0,1,1,0,0],ci:'亨，利貞。可小事，不可大事。',jie:'小有過越之象。山上有雷，小過。宜下不宜上，宜小不宜大。小事可略有過越以矯枉，大事則不可。謹小慎微，恭卑自守則吉。'},
+{n:'水火既濟',no:'第六十三卦',lines:[1,0,1,0,1,0],ci:'亨小，利貞。初吉終亂。',jie:'事已成就之象。水在火上，既濟。陰陽各得其位，事已成功。然既濟之後易生懈怠，初吉終亂，當思患預防、守成不懈，慎終如始。'},
+{n:'火水未濟',no:'第六十四卦',lines:[0,1,0,1,0,1],ci:'亨。小狐汔濟，濡其尾，無攸利。',jie:'事未成竟之象。火在水上，未濟。六十四卦之終，諸事未成，正含無限生機。宜審慎進取、堅持到底，不可功虧一簣，守正則終可成。'}
+];
+function castHexagram(){
+  var intro=document.getElementById('diviIntro');
+  var r=document.getElementById('diviResult');
+  intro.style.display='none';
+  r.classList.add('show');
+  /* stage 1: shaking coins */
+  r.innerHTML=
+    '<div class="coin-stage">'+
+      '<div class="coin-cast-title">搖 錢 問 卦</div>'+
+      '<div class="coin-cast-en">Casting the Three Coins</div>'+
+      '<div class="coin-row" id="coinRow">'+
+        '<div class="coin"></div><div class="coin"></div><div class="coin"></div>'+
+      '</div>'+
+      '<div class="coin-cast-en" id="coinHint">凝神靜氣 · 心念所問</div>'+
+    '</div>';
+  setTimeout(function(){
+    var row=document.getElementById('coinRow');
+    if(row){row.querySelectorAll('.coin').forEach(function(c){c.classList.add('settle');c.style.animationIterationCount='1';});}
+    var hint=document.getElementById('coinHint'); if(hint)hint.textContent='六爻既定 · 卦象將現';
+  },1500);
+  /* stage 2: reveal hexagram */
+  setTimeout(function(){
+    var idx=Math.floor(Math.random()*HEX.length);
+    var h=HEX[idx];
+    var linesHtml=h.lines.slice().reverse().map(function(yang,i){
+      var delay=(0.12*i).toFixed(2);
+      if(yang)return '<div class="hex-line" style="animation-delay:'+delay+'s"><span class="seg yang"></span></div>';
+      return '<div class="hex-line broken" style="animation-delay:'+delay+'s"><span class="seg"></span><span class="gap"></span><span class="seg"></span></div>';
+    }).join('');
+    r.innerHTML=
+      '<div class="hex-lines">'+linesHtml+'</div>'+
+      '<div class="gua-name" style="opacity:0;animation:lineIn .5s ease '+(0.12*6)+'s forwards;">'+h.n+'</div>'+
+      '<div class="gua-no" style="opacity:0;animation:lineIn .5s ease '+(0.12*6+0.1)+'s forwards;">'+h.no+' · Hexagram No.'+(idx+1)+'</div>'+
+      '<div class="gua-block" style="opacity:0;animation:lineIn .5s ease '+(0.12*6+0.2)+'s forwards;"><div class="gb-h">卦　辭 <span class="gb-en">The Judgment</span></div><p>'+h.ci+'</p></div>'+
+      '<div class="gua-block" style="opacity:0;animation:lineIn .5s ease '+(0.12*6+0.32)+'s forwards;"><div class="gb-h">解　卦 <span class="gb-en">Interpretation</span></div><p>'+h.jie+'</p></div>'+
+      '<div class="gua-note" style="opacity:0;animation:lineIn .5s ease '+(0.12*6+0.44)+'s forwards;">※ 卦象僅供參考，事在人為，心誠則靈</div>'+
+      '<button class="divi-btn" style="margin-top:20px;opacity:0;animation:lineIn .5s ease '+(0.12*6+0.56)+'s forwards;" onclick="recast()">再 占 一 卦<span class="en">Cast Again</span></button>';
+  },2150);
+}
+function recast(){
+  var r=document.getElementById('diviResult');
+  r.classList.remove('show');
+  r.innerHTML='';
+  document.getElementById('diviIntro').style.display='block';
+}
+
+/* ============ ICS ============ */
+function exportICS(){
+  var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Jingming Dao//CN\r\nCALSCALE:GREGORIAN\r\n';
+  CAL_EVENTS.forEach(function(e){
+    var d=e.date.replace(/-/g,'');
+    ics+='BEGIN:VEVENT\r\nUID:'+d+'-jingming@dao\r\nDTSTART;VALUE=DATE:'+d+'\r\nSUMMARY:'+e.title+'\r\nDESCRIPTION:'+(e.desc||'').replace(/\n/g,' ')+'\r\nEND:VEVENT\r\n';
+  });
+  ics+='END:VCALENDAR';
+  var blob=new Blob(['\ufeff'+ics],{type:'text/calendar;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='jingming-almanac.ics';a.click();
+}
+
+/* ============ INIT ============ */
+renderCalendar();
+renderDeityTags();
+renderDeities();
+renderSites();
+renderYi();
+/* dismiss splash after intro */
+(function(){
+  var sp=document.getElementById('splash');
+  if(!sp)return;
+  setTimeout(function(){sp.style.display='none';},3800);
+  /* allow tap to skip */
+  sp.addEventListener('click',function(){
+    sp.style.animation='none';sp.style.transition='opacity .35s';
+    sp.style.opacity='0';
+    setTimeout(function(){sp.style.display='none';},360);
+  });
+})();
+
+/* ============ PWA SERVICE WORKER ============ */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
   });
 }
 </script>
-
 </body>
 </html>
