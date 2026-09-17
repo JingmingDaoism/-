@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#6B2D8E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="净明宗日历">
+<title>道教净明宗 日历一览</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #FAF8FC;
+  color: #2D1B3D;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.header {
+  background: linear-gradient(135deg, #6B2D8E 0%, #8B3FB0 50%, #A855C8 100%);
+  color: white;
+  padding: 20px 16px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(107,45,142,0.3);
+}
+.header h1 {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 2px;
+}
+.header .subtitle {
+  font-size: 11px;
+  text-align: center;
+  opacity: 0.85;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+.content {
+  padding: 16px;
+  padding-bottom: 80px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.page { display: none; animation: fadeIn 0.3s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(107,45,142,0.08);
+  border: 1px solid rgba(107,45,142,0.06);
+}
+.card h2 {
+  font-size: 16px;
+  color: #6B2D8E;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #F0E6F5;
+}
+.card p { font-size: 14px; line-height: 1.7; color: #4A3A5C; margin-bottom: 8px; }
+.card ul { padding-left: 20px; margin-bottom: 8px; }
+.card li { font-size: 14px; line-height: 1.7; color: #4A3A5C; margin-bottom: 4px; }
+.nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  box-shadow: 0 -2px 12px rgba(107,45,142,0.1);
+  z-index: 100;
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-item .icon { font-size: 22px; margin-bottom: 2px; }
+.nav-item .label { font-size: 10px; color: #999; }
+.nav-item.active .label { color: #6B2D8E; font-weight: 600; }
+.nav-item.active { transform: translateY(-2px); }
+.search-box {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #E0D0EA;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  background: #FDFBFE;
+  outline: none;
+}
+.search-box:focus { border-color: #8B3FB0; box-shadow: 0 0 0 3px rgba(139,63,176,0.1); }
+.filter-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.filter-tag {
+  padding: 6px 14px;
+  background: #F5EEF9;
+  border: 1px solid #E0D0EA;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #6B2D8E;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-tag.active { background: #6B2D8E; color: white; border-color: #6B2D8E; }
+.deity-card {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 12px;
+  box-shadow: 0 2px 6px rgba(107,45,142,0.06);
+  border: 1px solid rgba(107,45,142,0.05);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.deity-card:active { transform: scale(0.98); }
+.deity-card img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; background: #F5EEF9; }
+.deity-info { flex: 1; min-width: 0; }
+.deity-info h3 { font-size: 15px; color: #6B2D8E; margin-bottom: 4px; }
+.deity-info p { font-size: 12px; color: #888; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+.calendar-day.has-event { background: #F5EEF9; color: #6B2D8E; font-weight: 600; }
+.calendar-day.today { background: #6B2D8E; color: white; }
+.calendar-day.other-month { opacity: 0.3; }
+.calendar-day .dot { position: absolute; bottom: 4px; width: 4px; height: 4px; border-radius: 50%; background: #8B3FB0; }
+.calendar-day.today .dot { background: white; }
+.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.calendar-header button { background: #6B2D8E; color: white; border: none; padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+.calendar-header h3 { font-size: 16px; color: #6B2D8E; }
+.weekday-row { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; color: #999; margin-bottom: 6px; }
+.event-detail {
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(107,45,142,0.06);
+  border-left: 4px solid #6B2D8E;
+}
+.event-detail h3 { font-size: 15px; color: #6B2D8E; margin-bottom: 6px; }
+.event-detail .date { font-size: 12px; color: #999; margin-bottom: 8px; }
+.event-detail .desc { font-size: 13px; line-height: 1.7; color: #4A3A5C; white-space: pre-wrap; }
+.term-item {
+  background: white;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 4px rgba(107,45,142,0.05);
+}
+.term-item h4 { font-size: 14px; color: #6B2D8E; margin-bottom: 4px; }
+.term-item p { font-size: 13px; color: #555; line-height: 1.6; }
+.classic-item {
+  background: white;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(107,45,142,0.05);
+  border-left: 3px solid #8B3FB0;
+}
+.classic-item h4 { font-size: 15px; color: #6B2D8E; margin-bottom: 6px; }
+.classic-item p { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 4px; }
+.site-item {
+  background: white;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(107,45,142,0.05);
+}
+.site-item h4 { font-size: 15px; color: #6B2D8E; margin-bottom: 6px; }
+.site-item p { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 4px; }
+.home-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+.stat-card {
+  background: linear-gradient(135deg, #6B2D8E, #8B3FB0);
+  color: white;
+  border-radius: 12px;
+  padding: 14px 8px;
+  text-align: center;
+}
+.stat-card .num { font-size: 24px; font-weight: 700; }
+.stat-card .label { font-size: 11px; opacity: 0.9; margin-top: 2px; }
+.home-section { margin-bottom: 16px; }
+.home-section h2 { font-size: 16px; color: #6B2D8E; margin-bottom: 10px; padding-left: 10px; border-left: 3px solid #6B2D8E; }
+.quick-link {
+  background: white;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 1px 4px rgba(107,45,142,0.05);
+  cursor: pointer;
+}
+.quick-link .icon { font-size: 20px; }
+.quick-link .text { flex: 1; }
+.quick-link .text h4 { font-size: 14px; color: #333; }
+.quick-link .text p { font-size: 11px; color: #999; }
+.quick-link .arrow { color: #CCC; }
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: white;
+  width: 100%;
+  max-width: 600px;
+  max-height: 85vh;
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal h2 { font-size: 18px; color: #6B2D8E; margin-bottom: 12px; text-align: center; }
+.modal .close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #F5EEF9;
+  border: none;
+  font-size: 18px;
+  color: #6B2D8E;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal img { width: 100%; max-height: 200px; object-fit: contain; border-radius: 10px; margin-bottom: 12px; background: #F9F5FC; }
+.modal p { font-size: 14px; line-height: 1.8; color: #4A3A5C; margin-bottom: 8px; }
+.modal .meta { background: #F9F5FC; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+.modal .meta p { font-size: 12px; color: #6B2D8E; margin-bottom: 4px; }
+.tip-box {
+  background: linear-gradient(135deg, #FFF8E1, #FFF3CD);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border-left: 4px solid #FAAD14;
+}
+.tip-box p { font-size: 13px; color: #8B6914; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>道教净明宗 日历一览</h1>
+  <div class="subtitle">Jingming Sect Calendar · 忠孝廉慎 垂世八宝</div>
+</div>
+
+<div class="content">
+
+  <!-- 首页 -->
+  <div class="page active" id="page-home">
+    <div class="home-stats">
+      <div class="stat-card"><div class="num">58</div><div class="label">道教日程</div></div>
+      <div class="stat-card"><div class="num">73</div><div class="label">神仙体系</div></div>
+      <div class="stat-card"><div class="num">54</div><div class="label">道教练语</div></div>
+    </div>
+
+    <div class="home-section">
+      <h2>今日宜忌</h2>
+      <div class="card" id="today-info">
+        <p>加载中...</p>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <h2>快速入口</h2>
+      <div class="quick-link" onclick="switchPage('calendar')">
+        <div class="icon">📅</div>
+        <div class="text"><h4>日历概览</h4><p>查看58个道教日程</p></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="quick-link" onclick="switchPage('deity')">
+        <div class="icon">🏛️</div>
+        <div class="text"><h4>神仙体系</h4><p>73位道教神仙介绍</p></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="quick-link" onclick="switchPage('terms')">
+        <div class="icon">📖</div>
+        <div class="text"><h4>道教练语</h4><p>54个常用术语解释</p></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="quick-link" onclick="switchPage('classics')">
+        <div class="icon">📜</div>
+        <div class="text"><h4>经典导读</h4><p>道教经典学习路径</p></div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="quick-link" onclick="switchPage('sites')">
+        <div class="icon">⛩️</div>
+        <div class="text"><h4>名胜古迹</h4><p>道教宫观巡礼指南</p></div>
+        <div class="arrow">›</div>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <h2>净明教旨</h2>
+      <div class="card">
+        <p><strong>忠孝廉慎</strong> — 净明道核心教旨</p>
+        <p><strong>垂世八宝</strong> — 忠、孝、廉、谨、宽、裕、容、忍</p>
+        <p><strong>修行理念</strong> — 欲修仙道，先修人道；人道圆满，仙道自成</p>
+        <p><strong>祖师</strong> — 净明普化天尊（许真君）</p>
+        <p><strong>祖庭</strong> — 南昌西山万寿宫</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 日历页 -->
+  <div class="page" id="page-calendar">
+    <div class="calendar-header">
+      <button onclick="changeMonth(-1)">‹ 上月</button>
+      <h3 id="calendar-title">2026年9月</h3>
+      <button onclick="changeMonth(1)">下月 ›</button>
+    </div>
+    <div class="weekday-row">
+      <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+    </div>
+    <div class="calendar-grid" id="calendar-grid"></div>
+    <div id="calendar-events"></div>
+  </div>
+
+  <!-- 神仙页 -->
+  <div class="page" id="page-deity">
+    <input type="text" class="search-box" placeholder="搜索神仙名号、神职..." id="deity-search" oninput="filterDeities()">
+    <div class="filter-tags" id="deity-filters"></div>
+    <div id="deity-list"></div>
+  </div>
+
+  <!-- 术语页 -->
+  <div class="page" id="page-terms">
+    <input type="text" class="search-box" placeholder="搜索道教练语..." id="term-search" oninput="filterTerms()">
+    <div class="filter-tags" id="term-filters"></div>
+    <div id="term-list"></div>
+  </div>
+
+  <!-- 经典页 -->
+  <div class="page" id="page-classics">
+    <input type="text" class="search-box" placeholder="搜索经典..." id="classic-search" oninput="filterClassics()">
+    <div id="classic-list"></div>
+  </div>
+
+  <!-- 名胜页 -->
+  <div class="page" id="page-sites">
+    <input type="text" class="search-box" placeholder="搜索宫观名胜..." id="site-search" oninput="filterSites()">
+    <div id="site-list"></div>
+  </div>
+
+  <!-- 详细指南页 -->
+  <div class="page" id="page-detail">
+    <input type="text" class="search-box" placeholder="搜索日程..." id="detail-search" oninput="filterDetails()">
+    <div class="filter-tags" id="detail-filters"></div>
+    <div id="detail-list"></div>
+  </div>
+
+</div>
+
+<!-- 底部导航 -->
+<div class="nav-bar">
+  <div class="nav-item active" onclick="switchPage('home')">
+    <div class="icon">🏠</div><div class="label">首页</div>
+  </div>
+  <div class="nav-item" onclick="switchPage('calendar')">
+    <div class="icon">📅</div><div class="label">日历</div>
+  </div>
+  <div class="nav-item" onclick="switchPage('deity')">
+    <div class="icon">🏛️</div><div class="label">神仙</div>
+  </div>
+  <div class="nav-item" onclick="switchPage('terms')">
+    <div class="icon">📖</div><div class="label">术语</div>
+  </div>
+  <div class="nav-item" onclick="switchPage('detail')">
+    <div class="icon">📋</div><div class="label">详情</div>
+  </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-content">
+    <button class="close-btn" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').catch(function() {});
+  });
+}
+</script>
+
+</body>
+</html>
