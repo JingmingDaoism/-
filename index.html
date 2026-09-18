@@ -12,11 +12,11 @@
 <meta name="apple-mobile-web-app-title" content="不知山房">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&family=Long+Cang&family=Noto+Serif+SC:wght@200;300;400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/jm-kai.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* ============ RESET & TOKENS ============ */
+/* 本地开源繁体楷体（AR PL KaitiM Big5，子集化，离线可用） */
+@font-face{font-family:'JM Kaiti';src:url('fonts/jm-kai.woff2') format('woff2');font-weight:normal;font-style:normal;font-display:swap;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 /* iOS/Android 触控加固：所有可点元素统一识别为可点击、消除 300ms 延迟 */
 button,[onclick],[role="button"],label,a{cursor:pointer;touch-action:manipulation;}
@@ -39,11 +39,11 @@ body{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
   --shadow:8px 8px 24px rgba(120,95,55,0.10), -8px -8px 24px rgba(255,252,245,0.7);
   --shadow-sm:4px 4px 12px rgba(120,95,55,0.08), -4px -4px 12px rgba(255,252,245,0.6);
   --shadow-inset:inset 3px 3px 8px rgba(120,95,55,0.08), inset -3px -3px 8px rgba(255,252,245,0.7);
-  --serif:'Noto Serif SC',serif;
-  --brush:'Zhi Mang Xing','Ma Shan Zheng',cursive;
-  --cao:'Long Cang','Zhi Mang Xing',cursive;
-  --en-serif:'Cormorant Garamond',serif;
-  --en-sans:'Jost',sans-serif;
+  --serif:'Noto Serif CJK TC','Noto Serif CJK SC','Songti SC','STSong','PMingLiU','MingLiU',serif;
+  --brush:'JM Kaiti','Kaiti SC','STKaiti','DFKai-SB','BiauKai','KaiTi',serif;
+  --cao:'JM Kaiti','Kaiti SC','STKaiti','DFKai-SB',serif;
+  --en-serif:'New York','Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --en-sans:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',Arial,sans-serif;
 }
 html,body{height:100%;}
 body{
@@ -1846,8 +1846,10 @@ document.getElementById('heroTime').textContent=YG.en.toUpperCase()+' YEAR · TH
     '<div class="dir-note">依日天干「'+gan+'」推算喜神、天乙貴人方位，供焚香、安壇、出行擇向之參考。</div>';
 })();
 
+var MON_ABBR=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 /* today events */
 (function(){
+ try{
   var box=document.getElementById('todayEvents');
   var today=CAL_EVENTS.filter(function(e){return e.date===TODAY_STR;});
   if(!today.length){
@@ -1855,8 +1857,8 @@ document.getElementById('heroTime').textContent=YG.en.toUpperCase()+' YEAR · TH
   }else{
     box.innerHTML=today.map(evCard).join('');
   }
+ }catch(e){if(window&&window.console)console.error('todayEvents',e);}
 })();
-var MON_ABBR=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 function evCard(e){
   var pp=e.date.split('-');
   return '<div class="event-card" onclick="openEventByDate(\''+e.date+'\')"><div class="event-day"><div class="d">'+parseInt(pp[2])+'</div><div class="m">'+MON_ABBR[parseInt(pp[1])-1]+'</div></div>'+
