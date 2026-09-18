@@ -799,6 +799,93 @@ body{
 }
 .nav-item svg{transition:transform .3s;}
 .nav-item.active svg{transform:translateY(-2px);}
+/* 六鈉導航微調 */
+.bottom-nav{padding:10px 4px 20px;}
+.nav-item{padding:4px 4px;gap:3px;}
+.bottom-nav .nav-item svg{width:19px;height:19px;}
+.nav-item .nav-label{font-size:9.5px;letter-spacing:1.5px;}
+.nav-item .nav-en{font-size:6.5px;letter-spacing:1px;}
+.quicknav .qn-char{width:42px;height:42px;font-size:16px;}
+
+/* ============ v13 每日一言 DAILY WORD ============ */
+.daily-word{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--card-raised),var(--card));border-radius:18px;box-shadow:var(--shadow-sm);padding:20px 22px 16px;margin:6px 0 4px;}
+.daily-word::before{content:'言';position:absolute;right:12px;top:6px;font-family:var(--brush);font-size:66px;color:rgba(166,58,46,.07);line-height:1;}
+.dw-quote{position:relative;z-index:1;font-family:var(--brush);font-size:19px;line-height:1.9;color:var(--ink);letter-spacing:1.5px;font-weight:500;}
+.dw-en{font-family:var(--en-serif);font-style:italic;font-size:11.5px;line-height:1.7;color:var(--gold);margin-top:10px;letter-spacing:.3px;}
+.dw-src{margin-top:12px;display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--muted);letter-spacing:1.5px;}
+.dw-seal{display:inline-flex;width:18px;height:18px;border-radius:4px;background:var(--red);color:#F7F1E6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* ============ v13 修持 CULTIVATION ============ */
+.cult-sec{margin-bottom:14px;}
+.inst-card{background:var(--card-raised);border-radius:22px;box-shadow:var(--shadow-sm);padding:22px 18px 18px;margin:6px 0 4px;display:flex;flex-direction:column;align-items:center;}
+.inst-switch{display:flex;background:var(--card);border-radius:999px;box-shadow:var(--shadow-inset);padding:4px;margin-bottom:22px;}
+.inst-switch button{border:none;background:transparent;font-family:var(--serif);font-size:14px;letter-spacing:3px;color:var(--muted);padding:8px 22px;border-radius:999px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1;}
+.inst-switch button span{font-family:var(--en-sans);font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;opacity:.8;}
+.inst-switch button.on{background:var(--red);color:#F7F1E6;box-shadow:0 4px 12px rgba(166,58,46,.3);}
+.inst-pad{width:188px;height:188px;border-radius:50%;border:none;cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 38% 32%,#B8493C,#8E271F 72%,#74201A);box-shadow:0 14px 34px rgba(142,39,31,.38),inset 0 6px 18px rgba(255,255,255,.18),inset 0 -10px 22px rgba(0,0,0,.28);color:#F4E7D6;padding:0;-webkit-tap-highlight-color:transparent;transition:transform .08s;}
+.inst-pad.is-qing{background:radial-gradient(circle at 38% 30%,#C9A86A,#9C7B3E 70%,#7C5F2C);box-shadow:0 14px 34px rgba(124,95,44,.36),inset 0 6px 18px rgba(255,255,255,.25),inset 0 -10px 22px rgba(0,0,0,.24);}
+.inst-pad.hit{transform:scale(.94);}
+.inst-art{position:absolute;inset:0;width:100%;height:100%;opacity:0;}
+.inst-pad .muyu-art{opacity:.2;}
+.inst-pad.is-qing .muyu-art{opacity:0;}
+.inst-pad.is-qing .qing-art{opacity:.26;}
+.inst-hit{position:relative;z-index:2;font-family:var(--brush);font-size:44px;letter-spacing:2px;text-shadow:0 2px 8px rgba(0,0,0,.28);line-height:1;}
+.inst-hit-en{position:absolute;bottom:48px;z-index:2;font-family:var(--en-sans);font-size:8px;letter-spacing:3px;text-transform:uppercase;opacity:.85;}
+.inst-counts{display:flex;gap:42px;margin-top:22px;}
+.ic-item{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.ic-item span{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--ink);line-height:1;}
+.ic-item small{font-family:var(--en-sans);font-size:8px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;}
+.inst-reset{margin-top:12px;border:none;background:none;font-family:var(--serif);font-size:11px;color:var(--muted);letter-spacing:2px;cursor:pointer;padding:4px 10px;}
+.inst-note{margin-top:4px;font-size:10.5px;color:var(--muted-light);letter-spacing:1.5px;text-align:center;line-height:1.7;}
+.zuo-card{position:relative;background:var(--card-raised);border-radius:22px;box-shadow:var(--shadow-sm);padding:26px 18px 20px;margin:6px 0 4px;display:flex;flex-direction:column;align-items:center;}
+.zuo-stage{display:flex;justify-content:center;margin:6px 0 22px;}
+.zuo-ring{width:196px;height:196px;border-radius:50%;background:radial-gradient(circle,#F8F3E9,#EFE6D4);box-shadow:var(--shadow-inset),0 0 0 1px var(--line);display:flex;align-items:center;justify-content:center;transition:transform 1s linear;will-change:transform;}
+.zuo-inner{width:150px;height:150px;border-radius:50%;background:linear-gradient(160deg,#F3EADA,#E7DCC6);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
+.zuo-phase{font-family:var(--brush);font-size:34px;color:var(--red);line-height:1;}
+.zuo-phase-en{font-family:var(--en-sans);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+.zuo-time{font-family:var(--en-serif);font-size:24px;color:var(--ink);margin-top:4px;font-variant-numeric:tabular-nums;line-height:1;}
+.zuo-len{display:flex;gap:8px;margin-bottom:16px;}
+.zuo-len button{width:52px;padding:9px 0;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-family:var(--en-serif);font-size:16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1;}
+.zuo-len button small{font-family:var(--en-sans);font-size:7px;letter-spacing:1px;color:var(--muted-light);}
+.zuo-len button.on{background:var(--red);color:#F7F1E6;border-color:var(--red);box-shadow:0 4px 12px rgba(166,58,46,.28);}
+.zuo-len button.on small{color:rgba(247,241,230,.8);}
+.zuo-len button.lock{opacity:.5;pointer-events:none;}
+.zuo-btn{width:100%;padding:15px 0;border-radius:14px;border:none;background:var(--ink);color:#F7F1E6;font-family:var(--serif);font-size:16px;letter-spacing:6px;padding-left:6px;cursor:pointer;box-shadow:0 6px 16px rgba(36,30,21,.22);}
+.zuo-btn.running{background:var(--red);}
+.zuo-stats{display:flex;width:100%;margin-top:18px;border-top:1px solid var(--line-soft);padding-top:16px;}
+.zs-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.zs-num{font-family:var(--serif);font-weight:700;font-size:22px;color:var(--ink);line-height:1;}
+.zs-k{font-size:10px;color:var(--muted);letter-spacing:1.5px;}
+.shichen-tip{margin-top:14px;width:100%;background:var(--card);border-radius:12px;padding:11px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:var(--shadow-inset);}
+.sc-name{font-family:var(--serif);font-size:12px;color:var(--red);letter-spacing:2px;}
+.sc-tip{font-size:11px;color:var(--ink-soft);line-height:1.75;letter-spacing:.5px;}
+.zuo-toast{position:absolute;left:50%;bottom:118px;transform:translateX(-50%) translateY(12px);background:var(--ink);color:#F7F1E6;font-family:var(--serif);font-size:12px;letter-spacing:1.5px;padding:11px 20px;border-radius:999px;opacity:0;pointer-events:none;transition:all .35s;z-index:60;white-space:nowrap;max-width:86%;overflow:hidden;text-overflow:ellipsis;}
+.zuo-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ============ v13 萬年曆黃曆 ALMANAC ============ */
+.al-head{text-align:center;padding:18px 16px 16px;background:var(--card-raised);border-radius:18px;box-shadow:var(--shadow-sm);margin-bottom:10px;}
+.al-lunar{font-family:var(--brush);font-size:30px;color:var(--ink);letter-spacing:3px;line-height:1;}
+.al-gz{font-family:var(--serif);font-size:13px;color:var(--red);letter-spacing:2px;margin-top:9px;}
+.al-sub{font-size:11px;color:var(--muted);letter-spacing:1.5px;margin-top:7px;}
+.al-jie{color:var(--red);font-weight:600;}
+.al-fest{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:1px solid var(--red);background:rgba(166,58,46,.07);border-radius:12px;padding:11px 14px;margin-bottom:10px;cursor:pointer;font-family:var(--serif);font-size:13px;color:var(--red);letter-spacing:1.5px;}
+.al-fest-tag{background:var(--red);color:#F7F1E6;font-size:10px;padding:2px 8px;border-radius:6px;letter-spacing:1px;flex-shrink:0;}
+.al-fest-go{margin-left:auto;font-family:var(--en-sans);font-size:9px;letter-spacing:1px;flex-shrink:0;}
+.al-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.al-cell{background:var(--card-raised);border-radius:12px;padding:11px 13px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:4px;}
+.alc-k{font-size:9.5px;color:var(--muted);letter-spacing:1.5px;}
+.alc-v{font-family:var(--serif);font-size:13px;color:var(--ink);letter-spacing:1px;}
+.al-row{display:flex;gap:10px;background:var(--card-raised);border-radius:12px;padding:11px 13px;margin-bottom:8px;box-shadow:var(--shadow-sm);}
+.al-k{flex-shrink:0;width:42px;font-size:10.5px;color:var(--muted);letter-spacing:2px;padding-top:3px;}
+.al-v{flex:1;display:flex;flex-wrap:wrap;gap:6px;}
+.al-tag{font-style:normal;font-family:var(--serif);font-size:11.5px;letter-spacing:1px;padding:3px 10px;border-radius:999px;background:var(--card);box-shadow:var(--shadow-inset);color:var(--ink-soft);}
+.al-tag.yi{background:rgba(166,58,46,.1);color:var(--red);}
+.al-tag.ji{background:rgba(36,30,21,.08);color:var(--ink-soft);}
+.al-pos i{font-style:normal;display:inline-flex;align-items:baseline;gap:3px;font-size:11.5px;color:var(--ink-soft);background:var(--card);border-radius:8px;padding:3px 9px;box-shadow:var(--shadow-inset);}
+.al-pos b{color:var(--gold);font-weight:600;font-family:var(--serif);}
+.al-pengzu{background:var(--card-raised);border-radius:12px;padding:11px 13px;font-size:11.5px;color:var(--ink-soft);line-height:1.8;box-shadow:var(--shadow-sm);letter-spacing:.5px;}
+.al-pengzu span{display:block;font-size:9.5px;color:var(--muted);letter-spacing:1.5px;margin-bottom:3px;}
+.al-foot{text-align:center;font-size:10px;color:var(--muted-light);letter-spacing:1.5px;line-height:1.8;margin:12px 4px 4px;}
 
 /* ============ ADD TO HOME SCREEN 安裝提示 ============ */
 .a2hs{
@@ -1112,6 +1199,14 @@ a.ics-action{text-decoration:none;}
 
       <div class="sec-label">
         <span class="dot"></span>
+        <span class="zh">每日一言</span>
+        <span class="en">Daily Word</span>
+        <span class="line"></span>
+      </div>
+      <div class="daily-word" id="dailyWord"></div>
+
+      <div class="sec-label">
+        <span class="dot"></span>
         <span class="zh">門徑</span>
         <span class="en">Gateway</span>
         <span class="line"></span>
@@ -1124,6 +1219,10 @@ a.ics-action{text-decoration:none;}
         <div class="qn-item" onclick="goPage('calendar')">
           <div class="qn-char">曆</div>
           <div class="qn-label">道曆</div>
+        </div>
+        <div class="qn-item" onclick="goPage('cultivation')">
+          <div class="qn-char">修</div>
+          <div class="qn-label">修持</div>
         </div>
         <div class="qn-item" onclick="goPage('deities')">
           <div class="qn-char">仙</div>
@@ -1202,8 +1301,13 @@ a.ics-action{text-decoration:none;}
         一鍵導入手機日曆
         <span class="en">Sync to Phone Calendar</span>
       </button>
-      <div class="sec-label"><span class="dot"></span><span class="zh">節日詳錄</span><span class="en">Details</span><span class="line"></span></div>
+      <div class="sec-label"><span class="dot"></span><span class="zh">是日黃曆</span><span class="en">Daily Almanac</span><span class="line"></span></div>
       <div class="cal-detail" id="calDetail"></div>
+    </div>
+
+    <!-- ============ CULTIVATION ============ -->
+    <div class="page" id="page-cultivation">
+      <div id="cultivateWrap"></div>
     </div>
 
     <!-- ============ DEITIES ============ -->
@@ -1493,6 +1597,12 @@ a.ics-action{text-decoration:none;}
       </svg>
       <span class="nav-label">道曆</span><span class="nav-en">Almanac</span>
     </button>
+    <button class="nav-item" data-page="cultivation" onclick="goPage('cultivation')">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+        <circle cx="12" cy="6.6" r="2.5"/><path d="M5.5 19.5c0-3.6 2.9-5.6 6.5-5.6s6.5 2 6.5 5.6"/><path d="M9 13.4l3 2.2 3-2.2"/>
+      </svg>
+      <span class="nav-label">修持</span><span class="nav-en">Cultivate</span>
+    </button>
     <button class="nav-item" data-page="deities" onclick="goPage('deities')">
       <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
         <circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/>
@@ -1518,7 +1628,9 @@ a.ics-action{text-decoration:none;}
 </div>
 
 <script src="data.js"></script>
+<script src="vendor/lunar.js"></script>
 <script src="liturgy.js"></script>
+<script src="extras.js"></script>
 <script>
 /* ===== 开屏移除：最先注册，绝不被后续渲染报错阻断；首次触摸即关 ===== */
 (function(){
@@ -1736,6 +1848,9 @@ var CAL_EVENTS=RAW_E.map(function(e){
   else if(/道场|道場|纪念|紀念/.test(title))type='Anniversary';
   return {date:e.date,title:title,en:info.en,desc:info.desc,type:type,raw:e.description||''};
 });
+/* 節日查詢表：供萬年曆黃曆卡片標註當日道門節日 */
+window.ALMANAC_FESTIVAL={};
+CAL_EVENTS.forEach(function(e){window.ALMANAC_FESTIVAL[e.date]=e;});
 var SITE_LIST=[];
 
 /* ============ NAV ============ */
@@ -1746,7 +1861,7 @@ function goPage(p){
     el.classList.toggle('active',el.dataset.page===p);
   });
   document.querySelectorAll('.qn-item').forEach(function(el,i){
-    var map=['home','calendar','deities','classics','divination'];
+    var map=['home','calendar','cultivation','deities','classics','divination'];
     el.classList.toggle('active',map[i]===p);
   });
   document.querySelector('.pages').scrollTop=0;
@@ -1902,29 +2017,12 @@ function selectDay(el,d){
   document.querySelectorAll('.cal-cell').forEach(function(c){c.classList.remove('selected');});
   if(el&&el.classList&&el.classList.contains('cal-cell'))el.classList.add('selected');
   renderCalDetail(d);
-  var date=calYear+'-'+pad2(calMonth+1)+'-'+pad2(d);
-  var list=CAL_EVENTS.filter(function(e){return e.date===date;});
-  if(list.length)openEventByDate(date);
 }
 function renderCalDetail(d){
   var box=document.getElementById('calDetail');
-  var list=CAL_EVENTS.filter(function(e){
-    var p=e.date.split('-');
-    if(parseInt(p[0])!==calYear||parseInt(p[1])!==calMonth+1)return false;
-    return d?parseInt(p[2])===d:true;
-  });
-  if(!list.length){
-    box.innerHTML='<div class="empty-state"><div class="empty-char">和</div><div class="empty-txt">'+(d?'此日無特殊節日':'本月節日見日曆標記')+'</div><div class="empty-en">No Observance</div></div>';
-    return;
-  }
-  box.innerHTML=list.map(function(e){
-    var r=mdToHtml(e.raw);
-    return '<div class="detail-card" onclick="openEventByDate(\''+e.date+'\')"><div class="dc-type">'+(e.type||'Observance')+'</div>'+
-      '<div class="dc-title">'+e.title+'</div><div class="dc-en">'+(r.en||e.en||'')+'</div>'+
-      '<div class="dc-full">'+r.html+'</div>'+
-      '<div class="dc-more">輕觸以專注閱讀 · Tap to Focus</div>'+
-      '</div>';
-  }).join('');
+  var useDay=d||((calYear===TY&&calMonth===TM)?TD:1);
+  box.innerHTML='<div id="almanacBox"></div>';
+  if(typeof renderAlmanac==='function'){try{renderAlmanac(calYear,calMonth+1,useDay,'almanacBox');}catch(e){if(window&&window.console)console.error('almanac',e);}}
 }
 
 /* ============ DEITIES ============ */
@@ -2520,7 +2618,7 @@ function guoImport(ev){
 }
 
 /* ============ INIT（逐项容错：任一渲染失败不阻断其余功能与开屏关闭） ============ */
-['renderCalendar','renderDeityTags','renderDeities','renderSites','renderYi','renderGuo'].forEach(function(fn){
+['renderCalendar','renderDailyWord','renderCultivate','renderDeityTags','renderDeities','renderSites','renderYi','renderGuo'].forEach(function(fn){
   try{ if(typeof window[fn]==='function') window[fn](); }
   catch(e){ if(window&&window.console) console.error('[init] '+fn,e); }
 });
