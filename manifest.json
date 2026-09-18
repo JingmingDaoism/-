@@ -1,7 +1,7 @@
 {
-  "name": "淨明宗 · 道教日曆與神課",
-  "short_name": "淨明宗",
-  "description": "道教正一淨明宗道曆、仙真體系、名勝古跡、經典導讀、入門威儀與六爻神課完整手冊",
+  "name": "淨明宗-不知山房",
+  "short_name": "不知山房",
+  "description": "道教正一淨明宗道曆、仙真體系、名勝古跡、經典導讀、入門威儀與六爻神課完整手冊 · 不知山房",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

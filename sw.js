@@ -1,10 +1,11 @@
 // 淨明宗 PWA Service Worker
-const CACHE_NAME = 'jingming-v3';
+const CACHE_NAME = 'jingming-v9';
 const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
   './data.js',
+  './jingming-almanac.ics',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
