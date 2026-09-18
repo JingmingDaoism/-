@@ -1,19 +1,19 @@
 // 淨明宗 PWA Service Worker
-const CACHE_NAME = 'jingming-v9';
-const urlsToCache = [
+const CACHE_NAME = 'jingming-v11';
+const CORE = [
   './',
   './index.html',
   './manifest.json',
   './data.js',
+  './liturgy.js',
   './jingming-almanac.ics',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
-
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(urlsToCache);
+      return cache.addAll(CORE);
     })
   );
   self.skipWaiting();

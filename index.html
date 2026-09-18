@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>淨明宗-不知山房</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#EAE2D4">
@@ -18,6 +18,11 @@
 <style>
 /* ============ RESET & TOKENS ============ */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+/* iOS/Android 触控加固：所有可点元素统一识别为可点击、消除 300ms 延迟 */
+button,[onclick],[role="button"],label,a{cursor:pointer;touch-action:manipulation;}
+button{font-family:inherit;-webkit-appearance:none;appearance:none;}
+img{-webkit-user-drag:none;user-select:none;}
+body{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 :root{
   --bg:#EAE2D4;
   --card:#F5EFE4;
@@ -507,6 +512,29 @@ body{
   opacity:0;pointer-events:none;transition:opacity .35s;
 }
 .reader.open{opacity:1;pointer-events:auto;}
+/* ===== 净明早晚课 · 文字课诵本 ===== */
+.ke-reader{position:absolute;inset:0;background:var(--bg);z-index:51;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .35s;}
+.ke-reader.open{opacity:1;pointer-events:auto;}
+.ke-bar{padding:calc(16px + env(safe-area-inset-top)) 20px 10px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ke-fs{margin-left:auto;flex-shrink:0;border:1px solid var(--line);background:var(--card);color:var(--red);font-family:var(--serif);font-size:12px;letter-spacing:2px;border-radius:999px;padding:7px 14px;box-shadow:var(--shadow-sm);}
+.ke-tabs{display:flex;gap:10px;padding:2px 20px 14px;flex-shrink:0;}
+.ke-tabs button{flex:1;padding:11px 0 9px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-family:var(--serif);font-size:15px;letter-spacing:3px;display:flex;flex-direction:column;align-items:center;gap:3px;line-height:1;}
+.ke-tabs button span{font-family:var(--en-sans);font-size:7px;letter-spacing:2px;text-transform:uppercase;opacity:.7;}
+.ke-tabs button.active{background:linear-gradient(145deg,#B54538,#92301F);color:#F7F1E6;border-color:transparent;box-shadow:0 6px 16px rgba(150,48,31,.28);}
+.ke-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2px 22px calc(64px + env(safe-area-inset-bottom));scrollbar-width:none;}
+.ke-scroll::-webkit-scrollbar{display:none;}
+.ke-sec{margin:0 auto 27px;max-width:540px;}
+.ke-h{text-align:center;font-family:var(--serif);font-weight:700;color:var(--red);letter-spacing:3px;margin:4px 0 3px;font-size:19px;}
+.ke-en{text-align:center;font-family:var(--en-sans);font-size:7.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:15px;}
+.kv{font-family:var(--serif);color:var(--ink);text-align:center;line-height:2.06;letter-spacing:1.5px;font-size:18.5px;margin:0 0 7px;}
+.kv.gui{color:var(--red);letter-spacing:4px;font-size:13.5px;margin:3px 0 9px;}
+.kv.ju{color:var(--red);font-weight:600;letter-spacing:3px;margin-top:11px;}
+.kp{font-family:var(--serif);color:var(--ink-soft);font-size:16px;line-height:2.06;letter-spacing:1px;margin:0 0 13px;text-align:justify;}
+.ke-end{text-align:center;font-family:var(--serif);font-weight:700;color:var(--red);letter-spacing:6px;font-size:20px;margin:32px 0 12px;}
+.ke-scroll.fs-xl .kv{font-size:23px;line-height:2.14;}
+.ke-scroll.fs-xl .kp{font-size:19.5px;line-height:2.14;}
+.ke-scroll.fs-xl .ke-h{font-size:22px;}
+.ke-scroll.fs-xl .kv.gui{font-size:15.5px;}
 .reader-bar{
   padding:18px 22px;display:flex;align-items:center;gap:14px;flex-shrink:0;
 }
@@ -1007,8 +1035,8 @@ a.ics-action{text-decoration:none;}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 @keyframes lineGrow{0%{width:0;opacity:0;}100%{width:104px;opacity:1;}}
 @keyframes splashOut{
-  0%{opacity:1;transform:scale(1);filter:blur(0);}
-  100%{opacity:0;transform:scale(1.08);filter:blur(6px);visibility:hidden;}
+  0%{opacity:1;transform:scale(1);filter:blur(0);pointer-events:auto;}
+  100%{opacity:0;transform:scale(1.08);filter:blur(6px);visibility:hidden;pointer-events:none;}
 }
 /* home content entrance after splash */
 @keyframes homeIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
@@ -1198,13 +1226,13 @@ a.ics-action{text-decoration:none;}
         <button class="c-tab" onclick="switchClassicTab(this,'yi')">威儀</button>
       </div>
       <div id="classicJing">
-        <div class="classic-card" onclick="openReader(0)">
+        <div class="classic-card" onclick="openKe('zao')" role="button">
           <div class="cc-mark">課</div>
           <div class="cc-en">Daily Liturgy · Morning & Evening</div>
           <div class="cc-title">淨明早晚課誦本</div>
           <div class="cc-sub">Jingming Daily Liturgy</div>
           <div class="cc-desc">道門四眾日用修持之常課。早課含八大神咒、《常清靜經》《升玄消災護命妙經》《禳災度厄真經》《高上玉皇心印妙經》及雷祖、許祖寶誥；晚課含《救苦拔罪》《生天得道》《解冤拔罪》三經，斗姥、三官、玄天、呂祖、薩祖、靈官、救苦、報恩諸寶誥與十二大願，為淨明弟子晨昏課誦、清淨三業之依憑。</div>
-          <div class="cc-go">誦讀全文 Read Liturgy →</div>
+          <div class="cc-go">翻閱課本 Open Liturgy →</div>
         </div>
         <div class="classic-card" onclick="openReader(1)">
           <div class="cc-mark">靜</div>
@@ -1343,6 +1371,25 @@ a.ics-action{text-decoration:none;}
     <div class="reader-body" id="readerBody"></div>
   </div>
 
+  <!-- ============ 净明早晚课 · 文字课诵本 ============ -->
+  <div class="ke-reader" id="keReader">
+    <div class="ke-bar">
+      <button class="reader-back" onclick="closeKe()" aria-label="返回">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="reader-title">
+        <div class="rt" id="keTitle">淨明日誦早課</div>
+        <div class="re" id="keEn">Morning Liturgy</div>
+      </div>
+      <button class="ke-fs" id="keFsBtn" onclick="keToggleFs()" aria-label="切換字號"><span id="keFsLabel">大字</span></button>
+    </div>
+    <div class="ke-tabs">
+      <button id="keTabZao" onclick="keSwitch('zao')">早課<span>Morning</span></button>
+      <button id="keTabWan" onclick="keSwitch('wan')">晚課<span>Evening</span></button>
+    </div>
+    <div class="ke-scroll" id="keScroll"></div>
+  </div>
+
   <!-- DEITY MODAL -->
   <div class="modal" id="deityModal" onclick="if(event.target===this)closeDeity()">
     <div class="modal-sheet">
@@ -1471,7 +1518,27 @@ a.ics-action{text-decoration:none;}
 </div>
 
 <script src="data.js"></script>
+<script src="liturgy.js"></script>
 <script>
+/* ===== 开屏移除：最先注册，绝不被后续渲染报错阻断；首次触摸即关 ===== */
+(function(){
+  function getS(){return document.getElementById('splash');}
+  function hardKill(){var s=getS();if(s)s.style.display='none';}
+  function fadeKill(){
+    var s=getS();if(!s||s.dataset.gone==='1')return;s.dataset.gone='1';
+    try{s.style.animation='none';s.style.transition='opacity .35s ease';s.style.opacity='0';s.style.pointerEvents='none';}catch(e){}
+    setTimeout(hardKill,400);
+  }
+  setTimeout(fadeKill,4300);
+  window.addEventListener('load',function(){setTimeout(fadeKill,4300);});
+  window.addEventListener('pageshow',function(e){if(e&&e.persisted)hardKill();else setTimeout(fadeKill,4300);});
+  var s0=getS();
+  if(s0){s0.addEventListener('animationend',function(ev){if(ev.animationName&&ev.animationName.indexOf('splashOut')===0)hardKill();});}
+  ['touchstart','click','scroll','keydown'].forEach(function(ev){
+    window.addEventListener(ev,function(){setTimeout(fadeKill,0);},{passive:true,once:true});
+  });
+})();
+
 /* ============ DATA ADAPT (from v2 data.js) ============ */
 function stripMd(md){
   if(!md)return '';
@@ -2028,6 +2095,49 @@ function openReader(i){
 }
 function closeReader(){document.getElementById('reader').classList.remove('open');}
 
+/* ============ 净明早晚课 · 文字课诵本 ============ */
+var keCur='zao',keFs='lg';
+try{var __fs=localStorage.getItem('jm_ke_fs');if(__fs==='xl'||__fs==='lg')keFs=__fs;}catch(e){}
+function keEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function openKe(b){
+  keCur=b||'zao';keRender();
+  document.getElementById('keReader').classList.add('open');
+  document.getElementById('keScroll').scrollTop=0;
+}
+function closeKe(){document.getElementById('keReader').classList.remove('open');}
+function keSwitch(b){if(keCur===b)return;keCur=b;keRender();document.getElementById('keScroll').scrollTop=0;}
+function keToggleFs(){
+  keFs=keFs==='lg'?'xl':'lg';
+  try{localStorage.setItem('jm_ke_fs',keFs);}catch(e){}
+  keApplyFs();
+}
+function keApplyFs(){
+  document.getElementById('keScroll').classList.toggle('fs-xl',keFs==='xl');
+  document.getElementById('keFsLabel').textContent=keFs==='xl'?'特大':'大字';
+}
+function keRender(){
+  var book=LITURGY[keCur];
+  document.getElementById('keTitle').textContent=book.title;
+  document.getElementById('keEn').textContent=book.en;
+  document.getElementById('keTabZao').classList.toggle('active',keCur==='zao');
+  document.getElementById('keTabWan').classList.toggle('active',keCur==='wan');
+  var html=book.sections.map(function(s){
+    if(s.end) return '<div class="ke-end">'+keEsc(s.end)+'</div>';
+    var o='<div class="ke-sec"><div class="ke-h">'+keEsc(s.h)+'</div>';
+    if(s.en) o+='<div class="ke-en">'+keEsc(s.en)+'</div>';
+    if(s.p) o+=s.p.map(function(t){return '<p class="kp">'+keEsc(t)+'</p>';}).join('');
+    if(s.v) o+=s.v.map(function(t){
+      var cls='kv';
+      if(t.indexOf('志心皈命禮')===0) cls='kv gui';
+      else if(t.indexOf('舉')===0) cls='kv ju';
+      return '<div class="'+cls+'">'+keEsc(t)+'</div>';
+    }).join('');
+    return o+'</div>';
+  }).join('');
+  document.getElementById('keScroll').innerHTML=html;
+  keApplyFs();
+}
+
 /* sites */
 function renderSites(){
   SITE_LIST=[
@@ -2407,25 +2517,11 @@ function guoImport(ev){
   ev.target.value='';
 }
 
-/* ============ INIT ============ */
-renderCalendar();
-renderDeityTags();
-renderDeities();
-renderSites();
-renderYi();
-renderGuo();
-/* dismiss splash after intro */
-(function(){
-  var sp=document.getElementById('splash');
-  if(!sp)return;
-  setTimeout(function(){sp.style.display='none';},4400);
-  /* allow tap to skip */
-  sp.addEventListener('click',function(){
-    sp.style.animation='none';sp.style.transition='opacity .35s';
-    sp.style.opacity='0';
-    setTimeout(function(){sp.style.display='none';},360);
-  });
-})();
+/* ============ INIT（逐项容错：任一渲染失败不阻断其余功能与开屏关闭） ============ */
+['renderCalendar','renderDeityTags','renderDeities','renderSites','renderYi','renderGuo'].forEach(function(fn){
+  try{ if(typeof window[fn]==='function') window[fn](); }
+  catch(e){ if(window&&window.console) console.error('[init] '+fn,e); }
+});
 
 /* ============ PWA SERVICE WORKER ============ */
 if('serviceWorker' in navigator){
