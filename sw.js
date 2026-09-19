@@ -1,5 +1,5 @@
 // 淨明宗 PWA Service Worker
-const CACHE_NAME = 'jingming-v13';
+const CACHE_NAME = 'jingming-v131';
 const CORE = [
   './',
   './index.html',
