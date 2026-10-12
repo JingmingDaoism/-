@@ -1,5 +1,5 @@
 // 淨明宗 PWA Service Worker
-const CACHE_NAME = 'jingming-v14';
+const CACHE_NAME = 'jingming-v14.1';
 const CORE = [
   './',
   './index.html',
@@ -10,6 +10,7 @@ const CORE = [
   './liturgy.js',
   './extras.js',
   './fonts/jm-kai.woff2',
+  './assets/img/zj-hand-1.png',
   './jingming-almanac.ics',
   './icons/icon-192.png',
   './icons/icon-512.png'

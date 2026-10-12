@@ -434,9 +434,9 @@ function zjHandSvg(){
   'M124,118 C128,138 128,150 127,158 L121,158 C122,140 122,122 120,114 Z',
   'M164,116 C168,136 168,150 167,158 L161,158 C162,140 162,120 160,112 Z',
   'M200,118 C204,138 204,152 203,160 L197,160 C198,142 198,122 196,114 Z'];
- return '<svg viewBox="0 0 300 300" class="zj-svg">'+
+ return '<svg viewBox="0 0 300 300" class="zj-svg" xmlns:xlink="http://www.w3.org/1999/xlink">'+
  '<defs><marker id="zjArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#A8884E"/></marker></defs>'+
- '<image href="assets/img/zj-hand-1.png" x="0" y="0" width="300" height="300"/>'+
+ '<image href="assets/img/zj-hand-1.png" xlink:href="assets/img/zj-hand-1.png" x="0" y="0" width="300" height="300" preserveAspectRatio="xMidYMid meet"/>'+
  '<g id="zjLinks"></g><g id="zjDots"></g></svg>';
 }
 function zjModeBtn(k,t){return '<button class="zj-mode" id="zjm-'+k+'" onclick="zjRel(\''+k+'\')">'+t+'</button>';}
@@ -447,12 +447,12 @@ function renderZhangjue(){
   zjModeBtn('liuchong','六沖 Chong')+zjModeBtn('maxing','馬星 Horse')+
   '<button class="zj-mode" onclick="zjClear()">復位 Reset</button></div>'+
   '<div class="zj-info" id="zjInfo"><div class="zj-rel-note">輕觸掌上地支，可知其<span class="rl-h">時辰、生肖、五行、方位、月建</span>；或擇上方關係，看三合、六合、六沖、馬星如何落於指掌。</div></div></div>';
- document.getElementById('zjDots').innerHTML=ZJ_ORDER.map(function(z){var p=ZJ_POS[z],c=WX_COLOR[ZHI_WX[z]];
-  return '<circle class="zj-dot" id="zjd-'+z+'" cx="'+p[0]+'" cy="'+p[1]+'" r="16"/>'+
-   '<text class="zj-txt" id="zjt-'+z+'" x="'+p[0]+'" y="'+p[1]+'" style="fill:'+c+'">'+z+'</text>'+
-   '<circle class="zj-hit" cx="'+p[0]+'" cy="'+p[1]+'" r="17" onclick="zjSelect(\''+z+'\')"/>';}).join('');
+ document.getElementById('zjDots').innerHTML=ZJ_ORDER.map(function(z){var p=ZJ_POS[z];
+  return '<circle class="zj-ring" id="zjr-'+z+'" cx="'+p[0]+'" cy="'+p[1]+'" r="13.5"/>'+
+   '<text class="zj-txt" id="zjt-'+z+'" x="'+p[0]+'" y="'+p[1]+'">'+z+'</text>'+
+   '<circle class="zj-hit" cx="'+p[0]+'" cy="'+p[1]+'" r="16" onclick="zjSelect(\''+z+'\')"/>';}).join('');
 }
-function zjDotOn(z,on){var d=document.getElementById('zjd-'+z),t=document.getElementById('zjt-'+z);if(d)d.classList.toggle('on',on);if(t){if(on){if(!t.dataset.c)t.dataset.c=t.style.fill;t.style.fill='#F7F1E6';}else if(t.dataset.c){t.style.fill=t.dataset.c;}}}
+function zjDotOn(z,on){var r=document.getElementById('zjr-'+z),t=document.getElementById('zjt-'+z);if(r)r.classList.toggle('on',on);if(t)t.classList.toggle('on',on);}
 function zjClearModeBtns(){['sanhe','liuhe','liuchong','maxing'].forEach(function(k){var b=document.getElementById('zjm-'+k);if(b)b.classList.remove('on');});}
 function zjDefault(){return '<div class="zj-rel-note">輕觸掌上地支，可知其<span class="rl-h">時辰、生肖、五行、方位、月建</span>；或擇上方關係，看三合、六合、六沖、馬星如何落於指掌。</div>';}
 function zjClear(){
@@ -570,7 +570,6 @@ function bzYunHtml(ec,sex){
 }
 function bzRange(a,b){var r=[];for(var i=a;i<=b;i++)r.push(i);return r;}
 /* ===== 滚轮 Picker ===== */
-var BZ_STATE={cal:'solar'};
 var bzWheelCtl={};
 function bzWheelHtml(id,label,en){
  return '<div class="bz-field"><label>'+label+(en?' <span class="en">'+en+'</span>':'')+'</label>'+
@@ -625,49 +624,95 @@ function bzDayItems(n){return bzRange(1,n).map(function(d){return {v:d,t:d+'日'
 function bzHourItems(){return bzRange(0,23).map(function(h){return {v:h,t:(h<10?'0'+h:h)+'時'};});}
 function bzMinItems(){return bzRange(0,59).map(function(x){return {v:x,t:x<10?'0'+x:String(x)};});}
 function bzSexItems(){return [{v:'男',t:'男 Male'},{v:'女',t:'女 Female'}];}
-function bzRefreshDays(keep){
- var y=bzWheelCtl.y.get(),m=bzWheelCtl.m.get();
- var n=BZ_STATE.cal==='solar'?bzDaysSolar(+y,m):bzDaysLunar(y,m);
- var sel=(keep&&+keep<=n)?keep:1;
- bzBuildWheelItems('d',bzDayItems(n),sel);
- requestAnimationFrame(function(){bzResync('d',sel);});
+function bzDefaultForm(){var n=new Date();return {name:'',cal:'solar',y:n.getFullYear(),m:n.getMonth()+1,d:n.getDate(),h:n.getHours(),mi:n.getMinutes(),sex:'男',bp:'',lp:''};}
+var BZ_FORM=bzDefaultForm();
+var BZ_FIELDS=[
+ {k:'name',t:'姓名',en:'NAME',type:'text',ph:'請填寫姓名'},
+ {k:'y',t:'出生年',en:'YEAR',type:'wheel',items:function(){return bzYearItems();}},
+ {k:'m',t:'月',en:'MONTH',type:'wheel',items:function(f){return f.cal==='solar'?bzMonthItemsSolar():bzMonthItemsLunar(+f.y);}},
+ {k:'d',t:'日',en:'DAY',type:'wheel',items:function(f){var n=f.cal==='solar'?bzDaysSolar(+f.y,f.m):bzDaysLunar(f.y,f.m);return bzDayItems(n);}},
+ {k:'h',t:'時',en:'HOUR',type:'wheel',items:function(){return bzHourItems();}},
+ {k:'mi',t:'分',en:'MINUTE',type:'wheel',items:function(){return bzMinItems();}},
+ {k:'sex',t:'性別',en:'SEX',type:'wheel',items:function(){return bzSexItems();}},
+ {k:'bp',t:'出生地',en:'BIRTHPLACE',type:'text',ph:'省 · 市（選填）'},
+ {k:'lp',t:'居住地',en:'RESIDENCE',type:'text',ph:'省 · 市（選填）'}
+];
+function bzValText(k){
+ var f=BZ_FORM;
+ if(k==='name')return f.name?'<span class="bv-txt">'+f.name+'</span>':'<span class="bv-ph">請填寫</span>';
+ if(k==='bp')return f.bp?'<span class="bv-txt">'+f.bp+'</span>':'<span class="bv-ph">省 · 市</span>';
+ if(k==='lp')return f.lp?'<span class="bv-txt">'+f.lp+'</span>':'<span class="bv-ph">省 · 市</span>';
+ if(k==='y')return f.y+' 年';
+ if(k==='m')return (f.cal==='lunar'&&String(f.m).charAt(0)==='-'?'閏'+(-f.m):f.m)+' 月';
+ if(k==='d')return f.d+' 日';
+ if(k==='h')return ('0'+f.h).slice(-2)+' 時';
+ if(k==='mi')return ('0'+f.mi).slice(-2)+' 分';
+ if(k==='sex')return f.sex+(f.sex==='男'?' Male':' Female');
+ return '';
+}
+function bzClampDay(){
+ var n=BZ_FORM.cal==='solar'?bzDaysSolar(+BZ_FORM.y,BZ_FORM.m):bzDaysLunar(BZ_FORM.y,BZ_FORM.m);
+ if(+BZ_FORM.d>n)BZ_FORM.d=n;
 }
 function bzSetCal(mode){
- if(BZ_STATE.cal===mode)return;BZ_STATE.cal=mode;
+ if(BZ_FORM.cal===mode)return;BZ_FORM.cal=mode;
  document.querySelectorAll('.bz-cal-mode span').forEach(function(s){s.classList.toggle('on',s.dataset.cal===mode);});
- var y=+bzWheelCtl.y.get();
- var months=mode==='solar'?bzMonthItemsSolar():bzMonthItemsLunar(y);
- bzBuildWheelItems('m',months,1);bzRefreshDays(1);
- requestAnimationFrame(function(){requestAnimationFrame(function(){bzResync('m',1);});});
+ bzClampDay();bzRenderRows();
 }
+function bzRenderRows(){BZ_FIELDS.forEach(function(f){var el=document.getElementById('bfv-'+f.k);if(el)el.innerHTML=bzValText(f.k);});}
+function bzFrowHtml(f){
+ return '<div class="bz-frow" onclick="bzOpen(\''+f.k+'\')"><span class="bf-label">'+f.t+'<em>'+f.en+'</em></span><span class="bf-val" id="bfv-'+f.k+'">'+bzValText(f.k)+'</span><span class="bf-chev"></span></div>';
+}
+function bzSheetHtml(){
+ return '<div class="bz-mask" id="bzMask" onclick="bzClose()"></div>'+
+ '<div class="bz-sheet" id="bzSheet"><div class="bs-bar"><span class="bs-cancel" onclick="bzClose()">取消</span><span class="bs-title" id="bsTitle"></span><span class="bs-ok" onclick="bzConfirm()">確認</span></div><div class="bs-body" id="bsBody"></div></div>';
+}
+function bzMountSheet(){if(!document.getElementById('bzSheet'))document.body.insertAdjacentHTML('beforeend',bzSheetHtml());}
 function renderBaziForm(){
  var m=document.getElementById('baziMount');if(!m)return;
- m.innerHTML='<div class="bz-card"><div id="bzSaves"></div><div class="bz-form">'+
-  bzTextField('姓名 <span class="en">Name</span>','bzNameInput','請填寫姓名')+
-  '<div class="bz-field"><label>曆法 <span class="en">Calendar</span></label><div class="bz-cal-mode">'+
-  '<span data-cal="solar" class="on">公曆 Gregorian</span><span data-cal="lunar">農曆 Lunar</span></div></div>'+
-  bzWheelHtml('y','出生年','Year')+bzWheelHtml('m','月','Month')+bzWheelHtml('d','日','Day')+
-  bzWheelHtml('h','小時','Hour')+bzWheelHtml('mi','分','Minute')+bzWheelHtml('sex','性別（大運備用）','Sex')+
-  bzTextField('出生地 <span class="en">Birthplace</span>','bzBirthPlace','省 · 市（選填）')+
-  bzTextField('居住地 <span class="en">Residence</span>','bzLivePlace','省 · 市（選填）')+
-  '<button class="bz-go" onclick="baziCalc()">排盤 Chart</button>'+
-  '<button class="bz-go bz-share-go" onclick="bzShare()" style="background:var(--ink);">邀請他人填寫 Invite</button>'+
-  '</div><div id="bzShare"></div><div id="bzResult"></div></div>';
- bzFormInit(1990,5,20,10,30,'男');
- bzRenderSaves();
-}
-function bzFormInit(y,m,d,h,mi,sex){
- BZ_STATE.cal='solar';
- bzBuildWheelItems('y',bzYearItems(),y);
- bzBuildWheelItems('m',bzMonthItemsSolar(),m);
- bzBuildWheelItems('d',bzDayItems(bzDaysSolar(y,m)),d);
- bzBuildWheelItems('h',bzHourItems(),h);
- bzBuildWheelItems('mi',bzMinItems(),mi);
- bzBuildWheelItems('sex',bzSexItems(),sex);
- bzInitWheel('y',y,function(){if(BZ_STATE.cal==='lunar'){bzBuildWheelItems('m',bzMonthItemsLunar(+bzWheelCtl.y.get()));bzResync('m',1);}bzRefreshDays(bzWheelCtl.d.get());});
- bzInitWheel('m',m,function(){bzRefreshDays(bzWheelCtl.d.get());});
- bzInitWheel('d',d,null);bzInitWheel('h',h,null);bzInitWheel('mi',mi,null);bzInitWheel('sex',sex,null);
+ m.innerHTML='<div class="bz-card">'+
+  '<div class="bz-cal-mode bz-cal-top"><span data-cal="solar" class="on">公曆 Gregorian</span><span data-cal="lunar">農曆 Lunar</span></div>'+
+  '<div class="bz-frows">'+BZ_FIELDS.map(bzFrowHtml).join('')+'</div>'+
+  '<button class="bz-go" onclick="baziCalc()">排　盤　Chart</button>'+
+  '<button class="bz-go bz-invite-go" onclick="bzShare()">邀請他人填寫 Invite</button>'+
+  '<div id="bzResult"></div><div id="bzSaves"></div><div id="bzShare"></div></div>';
  document.querySelectorAll('.bz-cal-mode span').forEach(function(s){s.addEventListener('click',function(){bzSetCal(s.dataset.cal);});});
+ bzRenderSaves();bzMountSheet();
+}
+var bzSheetCtl={key:null,get:null};
+function bzOpen(key){
+ var f=BZ_FIELDS.filter(function(x){return x.k===key;})[0];if(!f)return;
+ bzSheetCtl.key=key;
+ document.getElementById('bsTitle').innerHTML=f.t+' <em>'+f.en+'</em>';
+ var body=document.getElementById('bsBody');
+ if(f.type==='text'){
+  body.innerHTML='<input class="bs-input" id="bsInput" placeholder="'+(f.ph||'')+'" value="'+(BZ_FORM[key]||'')+'">';
+  setTimeout(function(){var i=document.getElementById('bsInput');if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length);}},320);
+  bzSheetCtl.get=function(){var i=document.getElementById('bsInput');return i?i.value.trim():'';};
+ }else{
+  var items=f.items(BZ_FORM);
+  body.innerHTML='<div class="wheel" data-wheel-id="sheet"><div class="wheel-scroll"><div class="wheel-pad"></div><div class="wheel-items" data-items="sheet"></div><div class="wheel-pad"></div></div><div class="wheel-band"></div><div class="wheel-fade top"></div><div class="wheel-fade bot"></div></div>';
+  bzBuildWheelItems('sheet',items,BZ_FORM[key]);
+  bzInitWheel('sheet',BZ_FORM[key],null);
+  bzSheetCtl.get=function(){return bzWheelCtl.sheet?bzWheelCtl.sheet.get():null;};
+ }
+ document.getElementById('bzMask').classList.add('on');
+ document.getElementById('bzSheet').classList.add('on');
+ document.body.classList.add('sheet-open');
+}
+function bzClose(){document.getElementById('bzMask').classList.remove('on');document.getElementById('bzSheet').classList.remove('on');document.body.classList.remove('sheet-open');}
+function bzConfirm(){
+ var key=bzSheetCtl.key,v=bzSheetCtl.get();
+ if(v!==null&&v!==undefined&&v!==''){
+  var num=(key==='y'||key==='d'||key==='h'||key==='mi');
+  BZ_FORM[key]=num?+v:v;
+  if(key==='y'&&BZ_FORM.cal==='lunar'){
+   var leap=bzLunarYear(+BZ_FORM.y).getLeapMonth();
+   if(String(BZ_FORM.m).charAt(0)==='-'&&leap!==(-BZ_FORM.m))BZ_FORM.m=1;
+  }
+  bzClampDay();bzRenderRows();
+ }
+ bzClose();
 }
 function bzVal(id){var el=document.getElementById(id);return el?el.value:'';}
 function bzPilHtml(p){
@@ -686,15 +731,14 @@ function bzPilHtml(p){
 function baziCalc(){
  var r=document.getElementById('bzResult');
  try{
-  var name=(bzVal('bzNameInput')||'').trim(),bp=(bzVal('bzBirthPlace')||'').trim(),lp=(bzVal('bzLivePlace')||'').trim();
+  var f=BZ_FORM;
   if(!window.Solar)throw new Error('曆庫未載入');
-  var y=+bzWheelCtl.y.get(),mRaw=bzWheelCtl.m.get(),d=+bzWheelCtl.d.get(),h=+bzWheelCtl.h.get(),mi=+bzWheelCtl.mi.get(),sex=bzWheelCtl.sex.get();
   var solar;
-  if(BZ_STATE.cal==='solar'){
-   solar=window.Solar.fromYmdHms(y,+mRaw,d,h,mi,0);
+  if(f.cal==='solar'){
+   solar=window.Solar.fromYmdHms(+f.y,+f.m,+f.d,+f.h,+f.mi,0);
   }else{
-   var neg=String(mRaw).charAt(0)==='-',mm=neg?-parseInt(mRaw):parseInt(mRaw);
-   solar=window.Lunar.fromYmdHms(y,mm,d,h,mi,0).getSolar();
+   var neg=String(f.m).charAt(0)==='-',mm=neg?-parseInt(f.m):parseInt(f.m);
+   solar=window.Lunar.fromYmdHms(+f.y,mm,+f.d,+f.h,+f.mi,0).getSolar();
   }
   var ec=solar.getLunar().getEightChar();
   var pillars=[
@@ -708,13 +752,14 @@ function baziCalc(){
   var dm='<div class="bz-daymaster">日主 <b style="color:'+WX_COLOR[GAN_WX[dayGan]]+'">'+dayGan+'</b>（'+GAN_DESC[dayGan]+'）；月柱'+ec.getMonth()+'，'+ZHI_MONTH_DESC[monthZhi]+'。<br>五行以四柱天干地支本氣統計，不含地支中餘氣。</div>';
   var bar=Object.keys(cnt).map(function(w){return cnt[w]?('<i style="width:'+(cnt[w]/8*100)+'%;background:'+WX_COLOR[w]+'"></i>'):'';}).join('');
   var leg=Object.keys(cnt).map(function(w){return '<i style="color:'+WX_COLOR[w]+'">'+w+' · '+cnt[w]+'</i>';}).join('');
-  var idBar='<div class="bz-idbar"><span class="nm">'+(name||'未命名')+'</span><span class="cal">'+(BZ_STATE.cal==='solar'?'公曆 Gregorian':'農曆 Lunar')+'</span>'+(bp?'<span>籍 '+bp+'</span>':'')+(lp?'<span>居 '+lp+'</span>':'')+'</div>';
+  var idBar='<div class="bz-idbar"><span class="nm">'+(f.name||'未命名')+'</span><span class="cal">'+(f.cal==='solar'?'公曆 Gregorian':'農曆 Lunar')+'</span>'+(f.bp?'<span>籍 '+f.bp+'</span>':'')+(f.lp?'<span>居 '+f.lp+'</span>':'')+'</div>';
   r.innerHTML=idBar+'<div class="bz-pillars">'+pillars.map(bzPilHtml).join('')+'</div>'+dm+
    '<div class="bz-sec-h">神煞 Shen Sha</div>'+bzShenShaHtml(ec)+
    '<div class="bz-wx-h">五行分佈 Five Phases</div><div class="bz-wxbar">'+bar+'</div><div class="bz-wxleg">'+leg+'</div>'+
-   bzYunHtml(ec,sex)+
+   bzYunHtml(ec,f.sex)+
    '<button class="bz-save-btn" onclick="bzSave()">保存此命盤到本機 Save Chart</button>'+
    '<div class="bz-foot">※ 此為客觀排盤，供曆法與命理研習，不主吉凶禍福。「天道無親，常與善人」，命數終不若心地，淨明弟子但當忠敬孝悌、積德修持。</div>';
+  setTimeout(function(){r.scrollIntoView({behavior:'smooth',block:'start'});},80);
  }catch(e){if(window&&window.console)console.error('bazi',e);r.innerHTML='<div class="bz-foot" style="color:var(--red);">所填日期無效，請核實年月日（如避免 2 月 30 日、農曆閏月）。</div>';}
 }
 
@@ -730,26 +775,18 @@ function bzRenderSaves(){
  }).join('')+'</div>';
 }
 function bzSave(){
- var y=bzWheelCtl.y.get(),m=bzWheelCtl.m.get(),d=bzWheelCtl.d.get(),h=bzWheelCtl.h.get(),mi=bzWheelCtl.mi.get(),sex=bzWheelCtl.sex.get();
- var nm=(bzVal('bzNameInput')||'').trim();
- if(!nm){nm=prompt('為此命盤命名（僅存於本機）：',y+'-'+m+'-'+d);if(nm===null)return;}
+ var f=BZ_FORM,nm=f.name;
+ if(!nm){nm=prompt('為此命盤命名（僅存於本機）：',f.y+'-'+f.m+'-'+f.d);if(nm===null)return;}
  var saves=bzSaves();
- saves.push({name:nm||(y+'-'+m+'-'+d),y:y,m:m,d:d,h:h,mi:mi,sex:sex,bp:bzVal('bzBirthPlace'),lp:bzVal('bzLivePlace'),cal:BZ_STATE.cal,ts:Date.now()});
+ saves.push({name:nm||(f.y+'-'+f.m+'-'+f.d),y:f.y,m:f.m,d:f.d,h:f.h,mi:f.mi,sex:f.sex,bp:f.bp,lp:f.lp,cal:f.cal,ts:Date.now()});
  localStorage.setItem('jm_bazi_saves',JSON.stringify(saves));
  bzRenderSaves();
 }
 function bzLoad(i){
  var s=bzSaves()[i];if(!s)return;
- document.getElementById('bzNameInput').value=s.name||'';
- document.getElementById('bzBirthPlace').value=s.bp||'';
- document.getElementById('bzLivePlace').value=s.lp||'';
- var mode=s.cal||'solar';
- if(BZ_STATE.cal!==mode)bzSetCal(mode);
- bzWheelCtl.y.set(s.y);
- if(mode==='lunar'){bzBuildWheelItems('m',bzMonthItemsLunar(+s.y),s.m);bzResync('m',s.m);}
- else bzWheelCtl.m.set(s.m);
- bzRefreshDays(s.d);
- bzWheelCtl.h.set(s.h);bzWheelCtl.mi.set(s.mi);bzWheelCtl.sex.set(s.sex);
+ BZ_FORM={name:s.name||'',cal:s.cal||'solar',y:s.y,m:s.m,d:s.d,h:s.h,mi:s.mi,sex:s.sex,bp:s.bp||'',lp:s.lp||''};
+ document.querySelectorAll('.bz-cal-mode span').forEach(function(sp){sp.classList.toggle('on',sp.dataset.cal===BZ_FORM.cal);});
+ bzClampDay();bzRenderRows();
  baziCalc();
 }
 function bzDelete(i){
@@ -801,6 +838,7 @@ window.renderZhangjue=renderZhangjue;window.zjSelect=zjSelect;window.zjRel=zjRel
 window.renderBaziForm=renderBaziForm;window.baziCalc=baziCalc;
 window.bzSave=bzSave;window.bzLoad=bzLoad;window.bzDelete=bzDelete;window.bzRenderSaves=bzRenderSaves;window.bzShare=bzShare;
 window.bzWheelCtl=bzWheelCtl;window.bzSetCal=bzSetCal;
+window.bzOpen=bzOpen;window.bzClose=bzClose;window.bzConfirm=bzConfirm;
 window.hitInstrument=hitInstrument;
 window.switchInstrument=switchInstrument;
 window.resetInstrument=resetInstrument;
